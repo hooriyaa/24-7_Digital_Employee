@@ -1,0 +1,192 @@
+# ===========================================
+# Customer Success Digital FTE - Docker Compose
+# ===========================================
+# Infrastructure for local development and testing
+#
+# Services:
+#   - PostgreSQL 16 with pgvector (local dev database)
+#   - Apache Kafka with Zookeeper (event streaming)
+#
+# Usage:
+#   docker-compose up -d           # Start all services
+#   docker-compose down            # Stop all services
+#   docker-compose ps              # Check service status
+#   docker-compose logs -f         # View logs
+# ===========================================
+
+services:
+  # ===========================================
+  # PostgreSQL 16 with pgvector Extension
+  # ===========================================
+  # Local development database with vector similarity search
+  # For production, use Neon (configured in .env)
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: cs-fte-postgres
+    restart: unless-stopped
+    
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-cs_fte}
+      PGDATA: /var/lib/postgresql/data/pgdata
+    
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-scripts/postgres:/docker-entrypoint-initdb.d:ro
+    
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-cs_fte}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    
+    networks:
+      - cs-fte-network
+    
+    profiles:
+      - local-dev
+
+  # ===========================================
+  # Apache Kafka (KRaft mode - no Zookeeper needed)
+  # ===========================================
+  # Event streaming for ticket ingestion and message delivery
+  kafka:
+    image: confluentinc/cp-kafka:7.6.1
+    container_name: cs-fte-kafka
+    restart: unless-stopped
+    
+    environment:
+      # Cluster ID for KRaft mode
+      CLUSTER_ID: ${KAFKA_CLUSTER_ID:-MkU3OEVBNTcwNTJENDM2Qk}
+      
+      # KRaft mode configuration (no Zookeeper needed)
+      KAFKA_KRAFT_MODE: "true"
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
+      
+      # Listeners configuration
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:29092,CONTROLLER://0.0.0.0:9093,HOST://0.0.0.0:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,HOST://localhost:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT,HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      
+      # Topic auto-creation
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+      KAFKA_NUM_PARTITIONS: 3
+      KAFKA_DEFAULT_REPLICATION_FACTOR: 1
+      
+      # Log retention
+      KAFKA_LOG_RETENTION_HOURS: 168
+      KAFKA_LOG_RETENTION_BYTES: -1
+      
+      # Offsets topic (required for single broker)
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+    
+    ports:
+      - "${KAFKA_PORT:-9092}:9092"
+    
+    volumes:
+      - kafka_data:/var/lib/kafka/data
+    
+    healthcheck:
+      test: ["CMD-SHELL", "kafka-topics --bootstrap-server localhost:9092 --list"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    
+    networks:
+      - cs-fte-network
+
+  # ===========================================
+  # Kafka Topic Initialization
+  # ===========================================
+  # Creates required topics on startup
+  kafka-init:
+    image: confluentinc/cp-kafka:7.6.1
+    container_name: cs-fte-kafka-init
+    depends_on:
+      kafka:
+        condition: service_healthy
+    
+    entrypoint: >
+      /bin/sh -c "
+      echo 'Waiting for Kafka to be ready...';
+      sleep 10;
+      echo 'Creating topics...';
+      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic tickets.create --partitions 3 --replication-factor 1;
+      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic tickets.update --partitions 3 --replication-factor 1;
+      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic messages.send --partitions 3 --replication-factor 1;
+      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic escalations.trigger --partitions 3 --replication-factor 1;
+      echo 'Topics created successfully!';
+      kafka-topics --bootstrap-server kafka:29092 --list;
+      "
+    
+    networks:
+      - cs-fte-network
+
+  # ===========================================
+  # FastAPI Backend Application
+  # ===========================================
+  # Main API service (commented out for development)
+  # Uncomment for production deployment
+  # backend:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #   container_name: cs-fte-backend
+  #   restart: unless-stopped
+  #   
+  #   environment:
+  #     DATABASE_URL: ${DATABASE_URL}
+  #     KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+  #     SECRET_KEY: ${SECRET_KEY}
+  #     GEMINI_API_KEY: ${GEMINI_API_KEY}
+  #     OPENROUTER_API_KEY: ${OPENROUTER_API_KEY}
+  #     CONTEXT7_API_KEY: ${CONTEXT7_API_KEY}
+  #     ULTRAMSG_INSTANCE_ID: ${ULTRAMSG_INSTANCE_ID}
+  #     ULTRAMSG_TOKEN: ${ULTRAMSG_TOKEN}
+  #   
+  #   ports:
+  #     - "8000:8000"
+  #   
+  #   depends_on:
+  #     kafka:
+  #       condition: service_healthy
+  #     kafka-init:
+  #       condition: service_completed_successfully
+  #   
+  #   networks:
+  #     - cs-fte-network
+  #   
+  #   profiles:
+  #     - production
+
+# ===========================================
+# Volume Configuration
+# ===========================================
+volumes:
+  postgres_data:
+    name: cs-fte-postgres-data
+    driver: local
+  
+  kafka_data:
+    name: cs-fte-kafka-data
+    driver: local
+
+# ===========================================
+# Network Configuration
+# ===========================================
+networks:
+  cs-fte-network:
+    name: cs-fte-network
+    driver: bridge

@@ -1,0 +1,144 @@
+# Product Information - Customer Success FTE
+
+## Overview
+Customer Success Digital FTE is a 24/7 autonomous AI employee for multi-channel customer support across Email, WhatsApp, and Web channels.
+
+## Key Features
+
+### 1. Multi-Channel Support
+- **Email**: Gmail integration with OAuth 2.0
+- **WhatsApp**: UltraMsg integration for WhatsApp Business API
+- **Web**: Real-time web chat interface
+
+### 2. AI-Powered Responses
+- **Primary Provider**: Google Gemini (gemini-1.5-flash)
+- **Fallback Provider**: OpenRouter (Qwen/DeepSeek models)
+- **Smart Routing**: Automatic provider fallback for reliability
+
+### 3. Knowledge Base
+- **Internal Knowledge**: pgvector-powered semantic search
+- **External Documentation**: Context7 integration for technical docs
+- **Smart Retrieval**: AI selects the right knowledge source
+
+### 4. Ticket Management
+- **Automatic Creation**: Every conversation creates a ticket
+- **Sentiment Analysis**: Real-time sentiment tracking (-1.0 to 1.0)
+- **Priority Levels**: low, normal, high, urgent
+- **Status Workflow**: open → in_progress → resolved/closed
+
+### 5. Escalation System
+- **Automatic Escalation**: Based on sentiment and confidence
+- **Human Handoff**: Seamless transfer to human agents
+- **Escalation Reasons**:
+  - Negative sentiment (< -0.5)
+  - Customer requests human agent
+  - Low confidence responses
+  - Complex or sensitive issues
+
+## Pricing & Plans
+
+### Free Tier
+- 100 tickets/month
+- Basic sentiment analysis
+- Email support only
+
+### Pro Plan - $49/month
+- 1,000 tickets/month
+- Multi-channel support (Email, WhatsApp, Web)
+- Advanced sentiment analysis
+- Priority support
+
+### Enterprise Plan - Custom Pricing
+- Unlimited tickets
+- Custom AI model training
+- Dedicated support
+- SLA guarantees
+
+## Common Issues & Solutions
+
+### Issue: Product Not Working
+**Solution**:
+1. Check account status
+2. Verify email confirmation
+3. Clear browser cache
+4. Try incognito mode
+5. Contact support if issue persists
+
+### Issue: How to Reset Your Password
+**Solution**:
+1. Go to the login page
+2. Click on "Forgot Password?" link
+3. Enter your registered email address
+4. Check your email for password reset link
+5. Click the reset link and create a new password
+6. Password must be at least 8 characters with one uppercase, one lowercase, and one number
+7. Log in with your new password
+
+If you don't receive the reset email within 5 minutes:
+- Check your spam/junk folder
+- Verify you entered the correct email
+- Contact support for assistance
+
+### Issue: Billing Questions
+**Solution**:
+1. Check invoice in account settings
+2. Review payment method
+3. Contact billing support
+4. Request refund within 30 days
+
+### Issue: Feature Request
+**Solution**:
+1. Submit via feature request form
+2. Upvote existing requests
+3. Contact product team
+4. Join beta program
+
+## Contact Information
+
+### Support Channels
+- **Email**: support@example.com
+- **WhatsApp**: +1-234-567-8900
+- **Web Chat**: Available 24/7
+
+### Response Times
+- **Urgent**: < 1 hour
+- **High**: < 4 hours
+- **Normal**: < 24 hours
+- **Low**: < 48 hours
+
+## Technical Specifications
+
+### API Endpoints
+- Base URL: http://localhost:8000/api/v1
+- Health Check: /health
+- Tickets: /tickets
+- Agent: /agent/respond
+- Providers: /agent/providers
+
+### Authentication
+- JWT-based authentication
+- Token expiration: 15 minutes
+- Refresh token: 7 days
+
+### Database
+- PostgreSQL with asyncpg
+- pgvector for semantic search
+- Neon (serverless PostgreSQL)
+
+## Escalation Criteria
+
+The AI agent will automatically escalate to a human agent when:
+1. **Negative Sentiment**: Customer sentiment score < -0.5
+2. **Explicit Request**: Customer asks for human agent
+3. **Low Confidence**: AI confidence < 0.6
+4. **Complex Issues**: Billing, legal, or technical escalations
+5. **Multiple Attempts**: Issue not resolved after 3 interactions
+
+## Smart Jawab (Smart Answers)
+
+The AI agent provides "Smart Jawab" by:
+1. **Analyzing Customer Message**: Understanding intent and sentiment
+2. **Searching Knowledge Base**: Finding relevant information
+3. **Checking External Docs**: Technical documentation via Context7
+4. **Generating Response**: Context-aware, helpful response
+5. **Evaluating Escalation**: Determining if human handoff needed
