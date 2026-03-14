@@ -1,14 +1,12 @@
 """
-Gmail Service - Send emails via Gmail API.
+Gmail Service - Send emails via Gmail API or SMTP.
 """
 import logging
+import smtplib
 from typing import Optional
-from google.oauth2.credentials import Credentials
-from googleapiclient.discovery import build
-from googleapiclient.errors import HttpError
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-import base64
+import os
 
 logger = logging.getLogger(__name__)
 
@@ -20,19 +18,10 @@ class GmailService:
     
     def __init__(self):
         """Initialize Gmail service."""
-        self.service: Optional[build] = None
-        self.credentials: Optional[Credentials] = None
-        
-    def _get_credentials(self) -> Optional[Credentials]:
-        """
-        Get Gmail OAuth2 credentials.
-        
-        Returns:
-            Credentials object or None if not configured
-        """
-        # For now, use service account or OAuth2 token
-        # This will be enhanced with proper OAuth2 flow
-        return None
+        self.smtp_server = "smtp.gmail.com"
+        self.smtp_port = 587
+        self.sender_email = os.getenv("GMAIL_SENDER_EMAIL", "support@example.com")
+        self.sender_password = os.getenv("GMAIL_SENDER_PASSWORD", "")
         
     async def send_email(
         self,
@@ -42,8 +31,8 @@ class GmailService:
         html: bool = False,
     ) -> bool:
         """
-        Send an email via Gmail API.
-        
+        Send an email via Gmail SMTP.
+
         Args:
             to: Recipient email address
             subject: Email subject
@@ -54,59 +43,37 @@ class GmailService:
             True if sent successfully, False otherwise
         """
         try:
-            # For now, log the email (will be replaced with actual Gmail API call)
             logger.info(f"📧 Sending email to: {to}")
             logger.info(f"📝 Subject: {subject}")
             logger.info(f"📄 Body: {body[:100]}...")
             
             # Create message
-            message = self._create_message("support@example.com", to, subject, body, html)
+            msg = MIMEMultipart()
+            msg['From'] = self.sender_email
+            msg['To'] = to
+            msg['Subject'] = subject
             
-            # Send via Gmail API (when credentials are available)
-            # For now, just log success
-            logger.info(f"✅ Email sent successfully to {to}")
+            # Attach body
+            msg.attach(MIMEText(body, 'html' if html else 'plain', 'utf-8'))
+            
+            # Send via SMTP (if credentials are configured)
+            if self.sender_password:
+                with smtplib.SMTP(self.smtp_server, self.smtp_port) as server:
+                    server.starttls()
+                    server.login(self.sender_email, self.sender_password)
+                    server.send_message(msg)
+                logger.info(f"✅ Email sent successfully to {to} via SMTP")
+            else:
+                # No credentials - just log (development mode)
+                logger.info(f"✅ [DEV MODE] Email would be sent to {to}")
+                logger.info(f"   From: {self.sender_email}")
+                logger.info(f"   Subject: {subject}")
             
             return True
             
         except Exception as e:
             logger.error(f"❌ Failed to send email: {e}", exc_info=True)
             return False
-    
-    def _create_message(
-        self,
-        sender: str,
-        to: str,
-        subject: str,
-        message_text: str,
-        html: bool = False,
-    ) -> dict:
-        """
-        Create a raw email message.
-        
-        Args:
-            sender: Sender email address
-            to: Recipient email address
-            subject: Email subject
-            message_text: Email body
-            html: Whether body is HTML
-            
-        Returns:
-            Raw email message as dict
-        """
-        message = MIMEMultipart("alternative")
-        message["to"] = to
-        message["from"] = sender
-        message["subject"] = subject
-        
-        # Add plain text and HTML versions
-        if html:
-            message.attach(MIMEText(message_text, "html", "utf-8"))
-        else:
-            message.attach(MIMEText(message_text, "plain", "utf-8"))
-        
-        raw_message = base64.urlsafe_b64encode(message.as_bytes()).decode("utf-8")
-        
-        return {"raw": raw_message}
 
 
 # Singleton instance

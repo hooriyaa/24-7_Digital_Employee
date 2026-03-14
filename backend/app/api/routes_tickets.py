@@ -23,10 +23,74 @@ from app.models.conversation import Conversation
 from app.models.message import Message
 from app.schemas.agent import AgentRequest
 from app.services.automation.auto_responder import auto_responder_service
+from app.services.gmail import gmail_service
 
 logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/tickets", tags=["Tickets"])
+
+
+async def send_ticket_confirmation_email(
+    customer_email: str,
+    customer_name: str,
+    ticket_id: str,
+    subject: str,
+    message: str,
+    channel: str = "web",  # Add channel parameter
+) -> None:
+    """
+    Send ticket confirmation email to customer.
+    
+    Args:
+        customer_email: Customer email address
+        customer_name: Customer name
+        ticket_id: Ticket ID
+        subject: Ticket subject
+        message: Original message
+        channel: Channel source (web/email/whatsapp)
+    """
+    email_subject = f"Ticket Created: {subject} (ID: {ticket_id[:8]}...)"
+
+    # Build email body - include track link only for web form
+    email_body = f"""
+Dear {customer_name},
+
+Thank you for contacting Customer Support!
+
+Your ticket has been created successfully:
+
+Ticket ID: {ticket_id}
+Subject: {subject}
+
+Your Message:
+{message}
+
+Our AI assistant is reviewing your request and will respond within 5 minutes.
+
+"""
+    
+    # Only include track link for web form submissions
+    if channel == "web":
+        email_body += f"""
+You can track your ticket status at: http://localhost:3000/check-status?ticket={ticket_id}
+
+"""
+    
+    email_body += """
+Best regards,
+Customer Support Team
+"""
+
+    try:
+        await gmail_service.send_email(
+            to=customer_email,
+            subject=email_subject,
+            body=email_body,
+            html=False,
+        )
+        logger.info(f"✅ Confirmation email sent to {customer_email}")
+    except Exception as e:
+        logger.error(f"❌ Failed to send confirmation email: {e}")
 
 
 class MessageRequest(BaseModel):
@@ -381,7 +445,19 @@ async def create_ticket(
                 customer_email=request.customer_email,
                 customer_phone=customer.phone,
             )
+            
+            # Send confirmation email
+            background_tasks.add_task(
+                send_ticket_confirmation_email,
+                customer_email=request.customer_email,
+                customer_name=request.customer_name or "Valued Customer",
+                ticket_id=str(ticket.id),
+                subject=ticket.subject,
+                message=request.message,
+            )
+            
             logger.info(f"🤖 Auto-responder background task added")
+            logger.info(f"📧 Email confirmation background task added")
         else:
             logger.info("⚠️  No message content provided")
 

@@ -40,6 +40,7 @@ gsap.registerPlugin(ScrollTrigger, useGSAP);
 interface FormData {
   name: string;
   email: string;
+  phone: string;
   subject: string;
   category: string;
   priority: string;
@@ -159,12 +160,27 @@ const TESTIMONIALS = [
     avatar: "👩‍🔬",
     rating: 5,
   },
+  {
+    name: "David Kim",
+    role: "CTO, StartupHub",
+    content: "Integration was seamless. Our support team is now 10x more efficient!",
+    avatar: "👨‍💻",
+    rating: 5,
+  },
+  {
+    name: "Lisa Thompson",
+    role: "Operations Director, ScaleUp",
+    content: "The multilingual support is a game-changer for our global business.",
+    avatar: "👩‍💼",
+    rating: 5,
+  },
 ];
 
 export default function Home() {
   const [formData, setFormData] = useState<FormData>({
     name: "",
     email: "",
+    phone: "",
     subject: "",
     category: "general",
     priority: "medium",
@@ -205,19 +221,91 @@ export default function Home() {
 
   // Channels animations
   useGSAP(() => {
-    gsap.from(".channel-card", {
-      scrollTrigger: { trigger: channelsRef.current, start: "top 80%" },
-      scale: 0.8, opacity: 0, duration: 0.8, stagger: 0.2, ease: "back.out(1.7)",
+    // Email channel animations
+    gsap.from(".channel-card-email", {
+      scrollTrigger: { trigger: ".channel-card-email", start: "top 85%" },
+      x: -100, opacity: 0, duration: 1, ease: "power3.out",
+    });
+    gsap.from(".email-float-1", {
+      scrollTrigger: { trigger: ".email-3d-container", start: "top 85%" },
+      y: 50, opacity: 0, duration: 1, ease: "back.out(1.7)",
+    });
+    gsap.from(".email-float-2", {
+      scrollTrigger: { trigger: ".email-3d-container", start: "top 85%" },
+      y: 50, opacity: 0, duration: 1, delay: 0.2, ease: "back.out(1.7)",
+    });
+    gsap.from(".email-float-3", {
+      scrollTrigger: { trigger: ".email-3d-container", start: "top 85%" },
+      y: 50, opacity: 0, duration: 1, delay: 0.4, ease: "back.out(1.7)",
+    });
+    gsap.from(".email-central-3d", {
+      scrollTrigger: { trigger: ".email-3d-container", start: "top 85%" },
+      scale: 0, rotation: 180, opacity: 0, duration: 1.2, ease: "back.out(1.7)",
+    });
+    gsap.from(".email-content-card", {
+      scrollTrigger: { trigger: ".channel-card-email", start: "top 85%" },
+      x: 100, opacity: 0, duration: 1, delay: 0.3, ease: "power3.out",
+    });
+
+    // WhatsApp channel animations
+    gsap.from(".channel-card-whatsapp", {
+      scrollTrigger: { trigger: ".channel-card-whatsapp", start: "top 85%" },
+      x: 100, opacity: 0, duration: 1, ease: "power3.out",
+    });
+    gsap.from(".whatsapp-bubble-1", {
+      scrollTrigger: { trigger: ".whatsapp-3d-container", start: "top 85%" },
+      scale: 0, opacity: 0, duration: 0.8, ease: "back.out(1.7)",
+    });
+    gsap.from(".whatsapp-bubble-2", {
+      scrollTrigger: { trigger: ".whatsapp-3d-container", start: "top 85%" },
+      scale: 0, opacity: 0, duration: 0.8, delay: 0.2, ease: "back.out(1.7)",
+    });
+    gsap.from(".whatsapp-bubble-3", {
+      scrollTrigger: { trigger: ".whatsapp-3d-container", start: "top 85%" },
+      scale: 0, opacity: 0, duration: 0.8, delay: 0.4, ease: "back.out(1.7)",
+    });
+    gsap.from(".whatsapp-central-3d", {
+      scrollTrigger: { trigger: ".whatsapp-3d-container", start: "top 85%" },
+      scale: 0, rotation: -180, opacity: 0, duration: 1.2, ease: "back.out(1.7)",
+    });
+    gsap.from(".whatsapp-content-card", {
+      scrollTrigger: { trigger: ".channel-card-whatsapp", start: "top 85%" },
+      x: -100, opacity: 0, duration: 1, delay: 0.3, ease: "power3.out",
+    });
+
+    // Web Form channel animations
+    gsap.from(".channel-card-webform", {
+      scrollTrigger: { trigger: ".channel-card-webform", start: "top 85%" },
+      x: -100, opacity: 0, duration: 1, ease: "power3.out",
+    });
+    gsap.from(".webform-element-1", {
+      scrollTrigger: { trigger: ".webform-3d-container", start: "top 85%" },
+      y: 50, opacity: 0, duration: 0.8, ease: "back.out(1.7)",
+    });
+    gsap.from(".webform-element-2", {
+      scrollTrigger: { trigger: ".webform-3d-container", start: "top 85%" },
+      y: 50, opacity: 0, duration: 0.8, delay: 0.2, ease: "back.out(1.7)",
+    });
+    gsap.from(".webform-element-3", {
+      scrollTrigger: { trigger: ".webform-3d-container", start: "top 85%" },
+      y: 50, opacity: 0, duration: 0.8, delay: 0.4, ease: "back.out(1.7)",
+    });
+    gsap.from(".webform-central-3d", {
+      scrollTrigger: { trigger: ".webform-3d-container", start: "top 85%" },
+      scale: 0, rotation: 90, opacity: 0, duration: 1.2, ease: "back.out(1.7)",
+    });
+    gsap.from(".webform-submit", {
+      scrollTrigger: { trigger: ".webform-3d-container", start: "top 85%" },
+      scale: 0, opacity: 0, duration: 0.8, delay: 0.6, ease: "back.out(1.7)",
+    });
+    gsap.from(".webform-content-card", {
+      scrollTrigger: { trigger: ".channel-card-webform", start: "top 85%" },
+      x: 100, opacity: 0, duration: 1, delay: 0.3, ease: "power3.out",
     });
   }, { scope: channelsRef });
 
-  // Testimonials animations
-  useGSAP(() => {
-    gsap.from(".testimonial-card", {
-      scrollTrigger: { trigger: testimonialsRef.current, start: "top 80%" },
-      y: 60, opacity: 0, duration: 0.8, stagger: 0.2, ease: "power3.out",
-    });
-  }, { scope: testimonialsRef });
+  // Testimonials animations - CSS only (no GSAP conflicts)
+  // Animations handled by CSS classes below
 
   // Contact animations
   useGSAP(() => {
@@ -236,11 +324,12 @@ export default function Home() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          customer_email: formData.email,
+          customer_email: selectedChannel === "whatsapp" ? undefined : formData.email,
           customer_name: formData.name,
+          customer_phone: selectedChannel === "whatsapp" ? formData.phone : undefined,
           subject: formData.subject,
-          message: formData.message,  // Changed from 'content' to 'message'
-          channel: selectedChannel,   // Changed from 'source_channel' to 'channel'
+          message: formData.message,
+          channel: selectedChannel,
           priority: formData.priority,
         }),
       });
@@ -253,7 +342,7 @@ export default function Home() {
           message: "🎉 Thank you! Your request has been submitted.",
           ticketId: data.id || data.ticket_id,
         });
-        setFormData({ name: "", email: "", subject: "", category: "general", priority: "medium", message: "" });
+        setFormData({ name: "", email: "", phone: "", subject: "", category: "general", priority: "medium", message: "" });
         setShowSuccessModal(true);
       } else {
         const errorData = await response.json();
@@ -267,7 +356,7 @@ export default function Home() {
         message: "🎉 Demo Mode: Request submitted successfully!",
         ticketId: "DEMO-" + Math.random().toString(36).substr(2, 9).toUpperCase(),
       });
-      setFormData({ name: "", email: "", subject: "", category: "general", priority: "medium", message: "" });
+      setFormData({ name: "", email: "", phone: "", subject: "", category: "general", priority: "medium", message: "" });
       setShowSuccessModal(true);
     }
   };
@@ -432,28 +521,74 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Features Section */}
-      <section ref={featuresRef} id="features" className="py-12 px-4 bg-white text-[#335765]">
-        <div className="container mx-auto max-w-7xl">
-          <div className="text-center mb-0 ">
-            <Badge className="mb-1 bg-[#B6D9E0]/30 text-[#335765] border-[#335765]/30 font-medium">
-              <Brain className="w-4 h-4 mr-2 inline" />
+      {/* Features Section - Enhanced 3D Design */}
+      <section ref={featuresRef} id="features" className="py-20 px-4 bg-gradient-to-b from-white via-[#F8F9F8] to-[#DBE2DC] relative overflow-hidden">
+        {/* Background Decorations */}
+        <div className="absolute top-20 left-20 w-72 h-72 bg-[#B6D9E0]/25 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-20 right-20 w-96 h-96 bg-[#74A8A4]/20 rounded-full blur-3xl"></div>
+        
+        <div className="container mx-auto max-w-7xl relative z-10">
+          <div className="text-center mb-16">
+            <Badge className="mb-4 bg-[#B6D9E0]/30 text-[#335765] border-[#335765]/30 font-medium inline-flex items-center gap-2 px-6 py-2">
+              <Brain className="w-4 h-4" />
               Features
             </Badge>
-            <h2 className="text-4xl md:text-5xl font-bold text-[#335765] mb-1 mt-2">Powerful Features</h2>
+            <h2 className="text-4xl md:text-5xl font-bold text-[#335765] mb-4">Powerful Features</h2>
             <p className="text-base text-[#556b7a] max-w-2xl mx-auto">
               Everything you need for world-class customer support
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 pb-24 ">
+          {/* Features Grid - 3D Cards */}
+          <div className="features-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {FEATURES.map((feature, i) => (
-              <div key={i} className="feature-card p-6 bg-white border-2 border-[#DBE2DC] rounded-xl shadow-lg hover:shadow-2xl transition-all hover:-translate-y-2 floating-card">
-                <div className={`w-14 h-14 rounded-xl ${feature.color} flex items-center justify-center mb-4 shadow-lg`}>
-                  <feature.icon className="w-7 h-7 text-white" />
+              <div
+                key={i}
+                className="feature-card-3d group relative perspective-1000"
+                style={{
+                  animation: 'fade-in-up 0.8s ease-out forwards',
+                  animationDelay: `${i * 0.1}s`,
+                  opacity: 0,
+                }}
+              >
+                {/* 3D Card Container */}
+                <div className="relative h-full bg-gradient-to-br from-white via-[#F8F9F8] to-white rounded-3xl p-8 border-2 border-[#DBE2DC] shadow-xl hover:shadow-2xl transition-all duration-500 transform group-hover:-translate-y-3">
+                  
+                  {/* Animated Background Gradient */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-[#335765]/5 via-transparent to-[#74A8A4]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-3xl"></div>
+                  
+                  {/* Floating Icon with 3D effect */}
+                  <div className="relative mb-6">
+                    <div className={`w-20 h-20 rounded-2xl ${feature.color} flex items-center justify-center shadow-lg transform group-hover:scale-110 group-hover:rotate-6 transition-all duration-500`}>
+                      <feature.icon className="w-10 h-10 text-white transform group-hover:scale-110 transition-transform duration-500" />
+                    </div>
+                    {/* Icon Glow Effect */}
+                    <div className={`absolute inset-0 w-20 h-20 rounded-2xl ${feature.color} blur-xl opacity-40 group-hover:opacity-60 transition-opacity duration-500`}></div>
+                  </div>
+
+                  {/* Feature Title */}
+                  <h3 className="text-2xl font-bold text-[#335765] mb-3 group-hover:text-[#74A8A4] transition-colors duration-300">
+                    {feature.title}
+                  </h3>
+
+                  {/* Feature Description */}
+                  <p className="text-[#556b7a] leading-relaxed text-sm mb-6">
+                    {feature.description}
+                  </p>
+
+                  {/* Decorative Line */}
+                  <div className="w-16 h-1 bg-gradient-to-r from-[#335765] to-[#74A8A4] rounded-full mb-4 transform group-hover:w-full transition-all duration-500"></div>
+
+                  {/* Hover Particles */}
+                  <div className="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                    <div className="w-2 h-2 bg-[#74A8A4] rounded-full animate-ping"></div>
+                    <div className="w-1.5 h-1.5 bg-[#B6D9E0] rounded-full animate-ping delay-100"></div>
+                    <div className="w-1 h-1 bg-[#335765] rounded-full animate-ping delay-200"></div>
+                  </div>
+
+                  {/* Bottom Accent */}
+                  <div className={`absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r ${feature.color} rounded-b-3xl transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500`}></div>
                 </div>
-                <h3 className="text-xl font-bold text-[#335765] mb-2">{feature.title}</h3>
-                <p className="text-[#556b7a] leading-relaxed text-sm">{feature.description}</p>
               </div>
             ))}
           </div>
@@ -461,9 +596,9 @@ export default function Home() {
       </section>
 
       {/* Channels Section */}
-      <section ref={channelsRef} id="channels" className="py-12 px-4 bg-gradient-to-b from-[#DBE2DC] to-[#F8F9F8] text-[#335765]">
+      <section ref={channelsRef} id="channels" className="py-16 px-4 bg-gradient-to-b from-[#DBE2DC] to-[#F8F9F8] text-[#335765] overflow-hidden">
         <div className="container mx-auto max-w-7xl">
-          <div className="text-center mb-4">
+          <div className="text-center mb-12">
             <Badge className="mb-2 bg-[#B6D9E0]/30 text-[#335765] border-[#335765]/30 font-medium">
               <Layers className="w-4 h-4 mr-2 inline" />
               Channels
@@ -474,64 +609,348 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-4 pb-12">
-            {CHANNELS.map((channel, i) => (
-              <div key={i} className="channel-card p-6 bg-white border-2 border-[#DBE2DC] rounded-xl shadow-xl hover:shadow-2xl transition-all hover:-translate-y-2 floating-card flex flex-col justify-between min-h-[280px]">
-                <div>
-                  <div className={`w-16 h-16 rounded-2xl ${channel.color} flex items-center justify-center mb-4 shadow-lg`}>
-                    <channel.icon className="w-8 h-8 text-white" />
+          <div className="space-y-16 pb-12">
+            {/* Channel 1 - Email */}
+            <div className="channel-card-email flex flex-col lg:flex-row items-center gap-8 lg:gap-16">
+              <div className="lg:w-1/2 order-2 lg:order-1">
+                <div className="relative">
+                  {/* 3D Email Animation Container */}
+                  <div className="email-3d-container relative w-full h-[400px] flex items-center justify-center">
+                    {/* Floating Email Icons */}
+                    <div className="email-float-1 absolute top-10 left-10 w-20 h-20 bg-gradient-to-br from-[#335765] to-[#74A8A4] rounded-2xl flex items-center justify-center shadow-2xl animate-float">
+                      <Mail className="w-10 h-10 text-white" />
+                    </div>
+                    <div className="email-float-2 absolute top-1/2 left-1/4 w-16 h-16 bg-gradient-to-br from-[#74A8A4] to-[#B6D9E0] rounded-xl flex items-center justify-center shadow-xl animate-float-delayed">
+                      <Mail className="w-8 h-8 text-white" />
+                    </div>
+                    <div className="email-float-3 absolute bottom-20 right-10 w-14 h-14 bg-gradient-to-br from-[#B6D9E0] to-[#335765] rounded-lg flex items-center justify-center shadow-lg animate-float">
+                      <Mail className="w-6 h-6 text-white" />
+                    </div>
+                    {/* Central 3D Element */}
+                    <div className="email-central-3d relative z-10">
+                      <div className="w-48 h-48 bg-gradient-to-br from-[#335765] via-[#74A8A4] to-[#B6D9E0] rounded-3xl flex items-center justify-center shadow-2xl transform rotate-12 hover:rotate-0 transition-transform duration-500">
+                        <div className="w-40 h-40 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center">
+                          <Mail className="w-20 h-20 text-white" />
+                        </div>
+                      </div>
+                    </div>
+                    {/* Particle Effects */}
+                    <div className="email-particle-1 absolute top-5 right-1/4 w-3 h-3 bg-[#74A8A4] rounded-full animate-ping"></div>
+                    <div className="email-particle-2 absolute bottom-1/3 left-10 w-2 h-2 bg-[#B6D9E0] rounded-full animate-ping delay-300"></div>
+                    <div className="email-particle-3 absolute top-1/3 right-10 w-2.5 h-2.5 bg-[#335765] rounded-full animate-ping delay-500"></div>
                   </div>
-                  <h3 className="text-2xl font-bold text-[#335765] mb-2">{channel.title}</h3>
-                  <p className="text-[#556b7a] mb-4 text-base">{channel.description}</p>
-                  <ul className="space-y-2">
-                    {channel.features.map((feature, j) => (
-                      <li key={j} className="flex items-center gap-2 text-[#335765] text-base">
-                        <CheckCircle2 className="w-5 h-5 text-[#74A8A4]" />
+                </div>
+              </div>
+              <div className="lg:w-1/2 order-1 lg:order-2">
+                <div className="email-content-card p-8 bg-white border-2 border-[#DBE2DC] rounded-3xl shadow-2xl hover:shadow-3xl transition-all">
+                  <div className="flex items-center gap-4 mb-6">
+                    <div className="w-16 h-16 bg-gradient-to-br from-[#335765] to-[#74A8A4] rounded-2xl flex items-center justify-center shadow-lg">
+                      <Mail className="w-8 h-8 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="text-3xl font-bold text-[#335765]">Email</h3>
+                      <p className="text-sm text-[#74A8A4] font-medium">Professional Communication</p>
+                    </div>
+                  </div>
+                  <p className="text-[#556b7a] mb-6 text-lg leading-relaxed">Gmail integration with OAuth 2.0 for secure, professional email communication with your customers.</p>
+                  <ul className="space-y-3">
+                    {CHANNELS[0].features.map((feature, j) => (
+                      <li key={j} className="flex items-center gap-3 text-[#335765] text-base group">
+                        <div className="w-6 h-6 bg-gradient-to-br from-[#74A8A4] to-[#B6D9E0] rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
+                          <CheckCircle2 className="w-4 h-4 text-white" />
+                        </div>
                         <span className="font-semibold">{feature}</span>
                       </li>
                     ))}
                   </ul>
                 </div>
               </div>
-            ))}
+            </div>
+
+            {/* Channel 2 - WhatsApp */}
+            <div className="channel-card-whatsapp flex flex-col lg:flex-row items-center gap-8 lg:gap-16">
+              <div className="lg:w-1/2">
+                <div className="whatsapp-content-card p-8 bg-white border-2 border-[#DBE2DC] rounded-3xl shadow-2xl hover:shadow-3xl transition-all">
+                  <div className="flex items-center gap-4 mb-6">
+                    <div className="w-16 h-16 bg-gradient-to-br from-[#74A8A4] to-[#B6D9E0] rounded-2xl flex items-center justify-center shadow-lg">
+                      <Smartphone className="w-8 h-8 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="text-3xl font-bold text-[#335765]">WhatsApp</h3>
+                      <p className="text-sm text-[#74A8A4] font-medium">Instant Messaging</p>
+                    </div>
+                  </div>
+                  <p className="text-[#556b7a] mb-6 text-lg leading-relaxed">UltraMsg integration for WhatsApp Business - chat with customers on the world's most popular messaging app.</p>
+                  <ul className="space-y-3">
+                    {CHANNELS[1].features.map((feature, j) => (
+                      <li key={j} className="flex items-center gap-3 text-[#335765] text-base group">
+                        <div className="w-6 h-6 bg-gradient-to-br from-[#74A8A4] to-[#B6D9E0] rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
+                          <CheckCircle2 className="w-4 h-4 text-white" />
+                        </div>
+                        <span className="font-semibold">{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+              <div className="lg:w-1/2">
+                <div className="relative">
+                  {/* 3D WhatsApp Animation Container */}
+                  <div className="whatsapp-3d-container relative w-full h-[400px] flex items-center justify-center">
+                    {/* Floating Chat Bubbles */}
+                    <div className="whatsapp-bubble-1 absolute top-10 left-10 p-4 bg-gradient-to-br from-[#74A8A4] to-[#B6D9E0] rounded-2xl rounded-bl-sm shadow-xl animate-float">
+                      <MessageCircle className="w-8 h-8 text-white" />
+                    </div>
+                    <div className="whatsapp-bubble-2 absolute top-1/3 right-16 p-3 bg-gradient-to-br from-[#B6D9E0] to-[#74A8A4] rounded-2xl rounded-br-sm shadow-lg animate-float-delayed">
+                      <MessageCircle className="w-6 h-6 text-white" />
+                    </div>
+                    <div className="whatsapp-bubble-3 absolute bottom-20 left-1/4 p-2.5 bg-gradient-to-br from-[#335765] to-[#74A8A4] rounded-2xl rounded-bl-sm shadow-md animate-float">
+                      <MessageCircle className="w-5 h-5 text-white" />
+                    </div>
+                    {/* Central 3D Element */}
+                    <div className="whatsapp-central-3d relative z-10">
+                      <div className="w-48 h-48 bg-gradient-to-br from-[#74A8A4] via-[#B6D9E0] to-[#335765] rounded-full flex items-center justify-center shadow-2xl animate-pulse-slow">
+                        <div className="w-40 h-40 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center">
+                          <Smartphone className="w-20 h-20 text-white" />
+                        </div>
+                      </div>
+                    </div>
+                    {/* Message Particles */}
+                    <div className="whatsapp-msg-1 absolute top-5 right-1/3 w-3 h-3 bg-[#74A8A4] rounded-full animate-ping"></div>
+                    <div className="whatsapp-msg-2 absolute bottom-1/4 left-16 w-2 h-2 bg-[#B6D9E0] rounded-full animate-ping delay-200"></div>
+                    <div className="whatsapp-msg-3 absolute top-1/4 right-10 w-2.5 h-2.5 bg-[#335765] rounded-full animate-ping delay-400"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Channel 3 - Web Form */}
+            <div className="channel-card-webform flex flex-col lg:flex-row items-center gap-8 lg:gap-16">
+              <div className="lg:w-1/2 order-2 lg:order-1">
+                <div className="relative">
+                  {/* 3D Web Form Animation Container */}
+                  <div className="webform-3d-container relative w-full h-[400px] flex items-center justify-center">
+                    {/* Floating Form Elements */}
+                    <div className="webform-element-1 absolute top-10 left-16 w-24 h-12 bg-gradient-to-r from-[#7F543D] to-[#335765] rounded-lg shadow-xl animate-float flex items-center px-4">
+                      <div className="w-16 h-3 bg-white/30 rounded"></div>
+                    </div>
+                    <div className="webform-element-2 absolute top-1/2 right-10 w-32 h-10 bg-gradient-to-r from-[#335765] to-[#74A8A4] rounded-lg shadow-lg animate-float-delayed flex items-center px-4">
+                      <div className="w-20 h-2.5 bg-white/30 rounded"></div>
+                    </div>
+                    <div className="webform-element-3 absolute bottom-20 left-1/4 w-28 h-16 bg-gradient-to-r from-[#74A8A4] to-[#B6D9E0] rounded-lg shadow-md animate-float flex items-center justify-center p-3">
+                      <div className="space-y-2 w-full">
+                        <div className="w-full h-2 bg-white/30 rounded"></div>
+                        <div className="w-2/3 h-2 bg-white/30 rounded"></div>
+                      </div>
+                    </div>
+                    {/* Central 3D Element - Form Card */}
+                    <div className="webform-central-3d relative z-10">
+                      <div className="w-56 h-56 bg-gradient-to-br from-[#7F543D] via-[#335765] to-[#74A8A4] rounded-3xl flex items-center justify-center shadow-2xl transform rotate-6 hover:rotate-0 transition-transform duration-500">
+                        <div className="w-48 h-48 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center p-4">
+                          <div className="space-y-3 w-full">
+                            <div className="w-full h-4 bg-white/30 rounded"></div>
+                            <div className="w-3/4 h-3 bg-white/30 rounded"></div>
+                            <div className="w-full h-10 bg-white/40 rounded-lg"></div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    {/* Submit Button Particle */}
+                    <div className="webform-submit absolute bottom-10 right-16 w-16 h-10 bg-gradient-to-r from-[#335765] to-[#74A8A4] rounded-lg shadow-lg flex items-center justify-center animate-bounce-slow">
+                      <Send className="w-5 h-5 text-white" />
+                    </div>
+                    {/* Success Particles */}
+                    <div className="webform-success-1 absolute top-5 right-1/4 w-3 h-3 bg-[#74A8A4] rounded-full animate-ping"></div>
+                    <div className="webform-success-2 absolute bottom-1/3 left-10 w-2 h-2 bg-[#B6D9E0] rounded-full animate-ping delay-300"></div>
+                    <div className="webform-success-3 absolute top-1/3 right-10 w-2.5 h-2.5 bg-[#7F543D] rounded-full animate-ping delay-500"></div>
+                  </div>
+                </div>
+              </div>
+              <div className="lg:w-1/2 order-1 lg:order-2">
+                <div className="webform-content-card p-8 bg-white border-2 border-[#DBE2DC] rounded-3xl shadow-2xl hover:shadow-3xl transition-all">
+                  <div className="flex items-center gap-4 mb-6">
+                    <div className="w-16 h-16 bg-gradient-to-br from-[#7F543D] to-[#335765] rounded-2xl flex items-center justify-center shadow-lg">
+                      <MessageCircle className="w-8 h-8 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="text-3xl font-bold text-[#335765]">Web Form</h3>
+                      <p className="text-sm text-[#74A8A4] font-medium">Embedded Integration</p>
+                    </div>
+                  </div>
+                  <p className="text-[#556b7a] mb-6 text-lg leading-relaxed">Beautiful embedded form on your website with instant submission and real-time status tracking.</p>
+                  <ul className="space-y-3">
+                    {CHANNELS[2].features.map((feature, j) => (
+                      <li key={j} className="flex items-center gap-3 text-[#335765] text-base group">
+                        <div className="w-6 h-6 bg-gradient-to-br from-[#7F543D] to-[#335765] rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
+                          <CheckCircle2 className="w-4 h-4 text-white" />
+                        </div>
+                        <span className="font-semibold">{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Testimonials Section */}
-      <section ref={testimonialsRef} id="testimonials" className="py-20 px-4 bg-white">
-        <div className="container mx-auto max-w-7xl">
+      {/* Testimonials Section - Enhanced with 3D GSAP Animations */}
+      <section ref={testimonialsRef} id="testimonials" className="py-24 px-4 bg-gradient-to-b from-white to-[#F8F9F8] relative">
+        {/* Background Decorations */}
+        <div className="absolute top-20 left-10 w-64 h-64 bg-[#B6D9E0]/20 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-20 right-10 w-80 h-80 bg-[#74A8A4]/15 rounded-full blur-3xl"></div>
+
+        <div className="container mx-auto max-w-7xl relative z-10">
           <div className="text-center mb-16">
-            <Badge className="mb-4 bg-[#B6D9E0]/30 text-[#335765] border-[#335765]/30 font-medium">
-              <Star className="w-4 h-4 mr-2 inline" />
+            <Badge className="testimonial-badge mb-4 bg-[#B6D9E0]/30 text-[#335765] border-[#335765]/30 font-medium inline-flex items-center gap-2 px-6 py-2">
+              <Star className="w-4 h-4 fill-[#335765]" />
               Testimonials
             </Badge>
-            <h2 className="text-5xl font-bold text-[#335765] mb-4">Loved by Businesses</h2>
-            <p className="text-xl text-[#556b7a] max-w-2xl mx-auto">
+            <h2 className="testimonial-title text-5xl md:text-6xl font-bold text-[#335765] mb-4">Loved by Businesses</h2>
+            <p className="testimonial-subtitle text-xl text-[#556b7a] max-w-2xl mx-auto">
               See what our customers are saying
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
-            {TESTIMONIALS.map((testimonial, i) => (
-              <Card key={i} className="testimonial-card p-8 bg-gradient-to-br from-white to-[#F8F9F8] border-2 border-[#DBE2DC] shadow-xl">
-                <div className="flex items-center gap-1 mb-4">
-                  {[...Array(testimonial.rating)].map((_, j) => (
-                    <Star key={j} className="w-5 h-5 fill-[#7F543D] text-[#7F543D]" />
-                  ))}
-                </div>
-                <p className="text-[#556b7a] mb-6 leading-relaxed italic">"{testimonial.content}"</p>
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 bg-gradient-to-br from-[#335765] to-[#74A8A4] rounded-full flex items-center justify-center text-2xl">
-                    {testimonial.avatar}
+          {/* Testimonials - Infinite Horizontal Scroll */}
+          <div className="testimonial-slider-wrapper w-full overflow-hidden relative">
+            {/* Cards container - horizontal flex with infinite scroll */}
+            <div 
+              className="testimonial-cards-container flex gap-6"
+              style={{
+                animation: 'scroll-left 40s linear infinite',
+                width: 'max-content',
+              }}
+            >
+              {/* First set of 5 cards */}
+              {TESTIMONIALS.map((testimonial, i) => (
+                <Card 
+                  key={`original-${i}`} 
+                  className="testimonial-card-3d group p-6 bg-gradient-to-br from-white via-[#F8F9F8] to-white border-2 border-[#DBE2DC] shadow-xl hover:shadow-2xl transition-all duration-300 w-[350px] flex-shrink-0 relative overflow-hidden"
+                  onMouseMove={(e) => {
+                    const card = e.currentTarget;
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    card.style.setProperty('--mouse-x', `${x}px`);
+                    card.style.setProperty('--mouse-y', `${y}px`);
+                  }}
+                >
+                  {/* Shine/glow effect following cursor */}
+                  <div 
+                    className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                    style={{
+                      background: `radial-gradient(circle 150px at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(116, 168, 164, 0.15), transparent 80%)`,
+                    }}
+                  />
+                  
+                  {/* Quote Icon */}
+                  <div className="absolute top-4 right-4 text-4xl text-[#B6D9E0]/30 font-serif leading-none">"</div>
+
+                  {/* Rating Stars */}
+                  <div className="testimonial-stars flex items-center gap-1 mb-4">
+                    {[...Array(testimonial.rating)].map((_, j) => (
+                      <div key={j} className="relative">
+                        <Star className="w-5 h-5 fill-[#7F543D] text-[#7F543D]" />
+                      </div>
+                    ))}
                   </div>
-                  <div>
-                    <p className="font-semibold text-[#335765]">{testimonial.name}</p>
-                    <p className="text-sm text-[#74A8A4]">{testimonial.role}</p>
+
+                  {/* Testimonial Content */}
+                  <div className="mb-6 relative">
+                    <p className="text-[#556b7a] text-base leading-relaxed italic relative z-10">
+                      {testimonial.content}
+                    </p>
+                    {/* Decorative line */}
+                    <div className="w-12 h-0.5 bg-gradient-to-r from-[#335765] to-[#74A8A4] mt-3 rounded-full"></div>
                   </div>
-                </div>
-              </Card>
-            ))}
+
+                  {/* User Info */}
+                  <div className="flex items-center gap-3 pt-3 border-t border-[#DBE2DC]/50">
+                    <div className="testimonial-avatar relative w-12 h-12 bg-gradient-to-br from-[#335765] via-[#74A8A4] to-[#B6D9E0] rounded-full flex items-center justify-center text-2xl shadow-lg transform group-hover:scale-110 transition-transform duration-300">
+                      {testimonial.avatar}
+                    </div>
+                    <div>
+                      <p className="font-bold text-[#335765] text-sm">{testimonial.name}</p>
+                      <p className="text-xs text-[#74A8A4] font-medium">{testimonial.role}</p>
+                    </div>
+                  </div>
+
+                  {/* Hover glow effect */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-[#335765]/5 via-transparent to-[#74A8A4]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl pointer-events-none"></div>
+                </Card>
+              ))}
+              
+              {/* Duplicate set for seamless loop (first 2 cards) */}
+              {TESTIMONIALS.slice(0, 2).map((testimonial, i) => (
+                <Card 
+                  key={`duplicate-${i}`} 
+                  className="testimonial-card-3d group p-6 bg-gradient-to-br from-white via-[#F8F9F8] to-white border-2 border-[#DBE2DC] shadow-xl hover:shadow-2xl transition-all duration-300 w-[350px] flex-shrink-0 relative overflow-hidden"
+                  onMouseMove={(e) => {
+                    const card = e.currentTarget;
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    card.style.setProperty('--mouse-x', `${x}px`);
+                    card.style.setProperty('--mouse-y', `${y}px`);
+                  }}
+                >
+                  {/* Shine/glow effect following cursor */}
+                  <div 
+                    className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                    style={{
+                      background: `radial-gradient(circle 150px at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(116, 168, 164, 0.15), transparent 80%)`,
+                    }}
+                  />
+                  
+                  <div className="absolute top-4 right-4 text-4xl text-[#B6D9E0]/30 font-serif leading-none">"</div>
+                  <div className="testimonial-stars flex items-center gap-1 mb-4">
+                    {[...Array(testimonial.rating)].map((_, j) => (
+                      <div key={j} className="relative">
+                        <Star className="w-5 h-5 fill-[#7F543D] text-[#7F543D]" />
+                      </div>
+                    ))}
+                  </div>
+                  <div className="mb-6 relative">
+                    <p className="text-[#556b7a] text-base leading-relaxed italic relative z-10">
+                      {testimonial.content}
+                    </p>
+                    <div className="w-12 h-0.5 bg-gradient-to-r from-[#335765] to-[#74A8A4] mt-3 rounded-full"></div>
+                  </div>
+                  <div className="flex items-center gap-3 pt-3 border-t border-[#DBE2DC]/50">
+                    <div className="testimonial-avatar relative w-12 h-12 bg-gradient-to-br from-[#335765] via-[#74A8A4] to-[#B6D9E0] rounded-full flex items-center justify-center text-2xl shadow-lg transform group-hover:scale-110 transition-transform duration-300">
+                      {testimonial.avatar}
+                    </div>
+                    <div>
+                      <p className="font-bold text-[#335765] text-sm">{testimonial.name}</p>
+                      <p className="text-xs text-[#74A8A4] font-medium">{testimonial.role}</p>
+                    </div>
+                  </div>
+                  <div className="absolute inset-0 bg-gradient-to-br from-[#335765]/5 via-transparent to-[#74A8A4]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl pointer-events-none"></div>
+                </Card>
+              ))}
+            </div>
+          </div>
+
+          {/* Stats Row */}
+          <div className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-6">
+            <div className="text-center p-6 bg-white/80 backdrop-blur-sm rounded-2xl border-2 border-[#DBE2DC] shadow-lg">
+              <p className="text-4xl font-bold bg-gradient-to-r from-[#335765] to-[#74A8A4] bg-clip-text text-transparent mb-2">500+</p>
+              <p className="text-sm text-[#556b7a] font-medium">Happy Clients</p>
+            </div>
+            <div className="text-center p-6 bg-white/80 backdrop-blur-sm rounded-2xl border-2 border-[#DBE2DC] shadow-lg">
+              <p className="text-4xl font-bold bg-gradient-to-r from-[#74A8A4] to-[#B6D9E0] bg-clip-text text-transparent mb-2">10K+</p>
+              <p className="text-sm text-[#556b7a] font-medium">Tickets Resolved</p>
+            </div>
+            <div className="text-center p-6 bg-white/80 backdrop-blur-sm rounded-2xl border-2 border-[#DBE2DC] shadow-lg">
+              <p className="text-4xl font-bold bg-gradient-to-r from-[#B6D9E0] to-[#335765] bg-clip-text text-transparent mb-2">99%</p>
+              <p className="text-sm text-[#556b7a] font-medium">Satisfaction Rate</p>
+            </div>
+            <div className="text-center p-6 bg-white/80 backdrop-blur-sm rounded-2xl border-2 border-[#DBE2DC] shadow-lg">
+              <p className="text-4xl font-bold bg-gradient-to-r from-[#7F543D] to-[#335765] bg-clip-text text-transparent mb-2">4.9/5</p>
+              <p className="text-sm text-[#556b7a] font-medium">Average Rating</p>
+            </div>
           </div>
         </div>
       </section>
@@ -640,17 +1059,6 @@ export default function Home() {
                       <span className="hidden sm:inline">Web Form</span>
                     </button>
                     <button
-                      onClick={() => setSelectedChannel("email")}
-                      className={`flex-1 py-4 px-4 text-center font-semibold transition-all flex items-center justify-center gap-2 rounded-t-xl cursor-pointer ${
-                        selectedChannel === "email"
-                          ? "bg-white/95 text-[#335765] shadow-lg"
-                          : "text-white/90 hover:bg-white/20"
-                      }`}
-                    >
-                      <Mail className="w-5 h-5" />
-                      <span className="hidden sm:inline">Email</span>
-                    </button>
-                    <button
                       onClick={() => setSelectedChannel("whatsapp")}
                       className={`flex-1 py-4 px-4 text-center font-semibold transition-all flex items-center justify-center gap-2 rounded-t-xl cursor-pointer ${
                         selectedChannel === "whatsapp"
@@ -694,18 +1102,32 @@ export default function Home() {
                           className="bg-white border-2 border-[#DBE2DC] text-[#335765] placeholder:text-[#9fb5b8] focus:border-[#74A8A4] focus:ring-2 focus:ring-[#74A8A4]/20 rounded-xl"
                         />
                       </div>
-                      <div className="space-y-2">
-                        <Label className="text-[#335765] font-bold">Email Address *</Label>
-                        <Input
-                          name="email"
-                          type="email"
-                          value={formData.email}
-                          onChange={handleChange}
-                          placeholder="john@example.com"
-                          required
-                          className="bg-white border-2 border-[#DBE2DC] text-[#335765] placeholder:text-[#9fb5b8] focus:border-[#74A8A4] focus:ring-2 focus:ring-[#74A8A4]/20 rounded-xl"
-                        />
-                      </div>
+                      {selectedChannel === "whatsapp" ? (
+                        <div className="space-y-2">
+                          <Label className="text-[#335765] font-bold">WhatsApp Number *</Label>
+                          <Input
+                            name="phone"
+                            value={formData.phone}
+                            onChange={handleChange}
+                            placeholder="+92 300 1234567"
+                            required
+                            className="bg-white border-2 border-[#DBE2DC] text-[#335765] placeholder:text-[#9fb5b8] focus:border-[#74A8A4] focus:ring-2 focus:ring-[#74A8A4]/20 rounded-xl"
+                          />
+                        </div>
+                      ) : (
+                        <div className="space-y-2">
+                          <Label className="text-[#335765] font-bold">Email Address *</Label>
+                          <Input
+                            name="email"
+                            type="email"
+                            value={formData.email}
+                            onChange={handleChange}
+                            placeholder="john@example.com"
+                            required
+                            className="bg-white border-2 border-[#DBE2DC] text-[#335765] placeholder:text-[#9fb5b8] focus:border-[#74A8A4] focus:ring-2 focus:ring-[#74A8A4]/20 rounded-xl"
+                          />
+                        </div>
+                      )}
                     </div>
 
                     <div className="space-y-2">

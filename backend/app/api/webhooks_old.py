@@ -17,7 +17,15 @@ from app.crud import customer_crud, ticket_crud, message_crud
 from app.services.channels import ultramsg_service, gmail_service
 from app.services.channels.whatsapp import UltraMsgService
 
+# Import new webhook handlers
+from app.api.webhooks.whatsapp import router as whatsapp_router
+from app.api.webhooks.gmail import router as gmail_router
+
 router = APIRouter(prefix="/webhooks", tags=["Webhooks"])
+
+# Include sub-routers
+router.include_router(whatsapp_router, prefix="/whatsapp")
+router.include_router(gmail_router, prefix="/gmail")
 
 
 @router.post("/ultramsg")

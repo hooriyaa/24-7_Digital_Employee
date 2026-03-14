@@ -18,8 +18,8 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 
 from app.services.nlp import sentiment_service
 from app.crud import ticket_crud, message_crud, knowledge_base_crud
-from app.services.channels.whatsapp import ultramsg_service
-from app.services.channels.email import gmail_service
+from app.services.ultramsg import ultramsg_service
+from app.services.gmail import gmail_service
 
 logger = logging.getLogger(__name__)
 
