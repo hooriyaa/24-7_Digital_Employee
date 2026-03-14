@@ -381,11 +381,26 @@ export default function Home() {
               </div>
             </div>
             <div className="flex items-center gap-6">
-              <a href="#features" className="text-sm font-medium text-[#335765] hover:text-[#74A8A4] transition-colors cursor-pointer">Features</a>
-              <a href="#channels" className="text-sm font-medium text-[#335765] hover:text-[#74A8A4] transition-colors cursor-pointer">Channels</a>
-              <a href="#testimonials" className="text-sm font-medium text-[#335765] hover:text-[#74A8A4] transition-colors cursor-pointer">Testimonials</a>
-              <a href="/dashboard" className="text-sm font-medium text-[#335765] hover:text-[#74A8A4] transition-colors cursor-pointer">Dashboard</a>
-              <a href="/check-status" className="text-sm font-medium text-[#335765] hover:text-[#74A8A4] transition-colors cursor-pointer">Check Status</a>
+              <a href="#features" className="text-sm font-medium text-[#335765] relative group overflow-hidden">
+                Features
+                <span className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-[#335765] to-[#74A8A4] transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300 ease-out"></span>
+              </a>
+              <a href="#channels" className="text-sm font-medium text-[#335765] relative group overflow-hidden">
+                Channels
+                <span className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-[#335765] to-[#74A8A4] transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300 ease-out"></span>
+              </a>
+              <a href="#testimonials" className="text-sm font-medium text-[#335765] relative group overflow-hidden">
+                Testimonials
+                <span className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-[#335765] to-[#74A8A4] transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300 ease-out"></span>
+              </a>
+              <a href="/dashboard" className="text-sm font-medium text-[#335765] relative group overflow-hidden">
+                Dashboard
+                <span className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-[#335765] to-[#74A8A4] transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300 ease-out"></span>
+              </a>
+              <a href="/check-status" className="text-sm font-medium text-[#335765] relative group overflow-hidden">
+                Check Status
+                <span className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-[#335765] to-[#74A8A4] transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300 ease-out"></span>
+              </a>
               <Button
                 onClick={() => {
                   const ticketId = prompt("Enter your Tracking ID:");
