@@ -229,8 +229,18 @@ export default function TrackPage() {
     return (
       <div className="min-h-screen bg-gradient-to-b from-[#F8F9F8] via-[#DBE2DC] to-[#F8F9F8] flex items-center justify-center">
         <div className="text-center">
-          <Loader2 className="w-12 h-12 animate-spin mx-auto text-[#74A8A4] mb-4" />
-          <p className="text-[#335765] font-semibold">Loading ticket...</p>
+          {/* Beautiful 3D Loading Animation */}
+          <div className="relative w-20 h-20 mx-auto mb-6">
+            {/* Outer Ring */}
+            <div className="absolute inset-0 rounded-full border-4 border-[#74A8A4]/20 border-t-[#74A8A4] animate-spin"></div>
+            {/* Middle Ring */}
+            <div className="absolute inset-2 rounded-full border-4 border-[#B6D9E0]/20 border-r-[#B6D9E0] animate-spin" style={{ animationDirection: 'reverse', animationDuration: '0.8s' }}></div>
+            {/* Inner Dot */}
+            <div className="absolute inset-4 rounded-full bg-gradient-to-br from-[#335765] to-[#74A8A4] animate-ping" style={{ animationDuration: '1.5s' }}></div>
+            {/* Center Glow */}
+            <div className="absolute inset-0 rounded-full bg-gradient-to-br from-[#74A8A4] to-[#B6D9E0] opacity-20 blur-md animate-pulse"></div>
+          </div>
+          <p className="text-[#335765] font-semibold text-lg">Loading ticket...</p>
         </div>
       </div>
     );
@@ -238,17 +248,58 @@ export default function TrackPage() {
 
   if (error || !ticketData) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-[#F8F9F8] via-[#DBE2DC] to-[#F8F9F8] flex items-center justify-center">
-        <Card className="max-w-md p-8 bg-white/90 backdrop-blur-xl border-2 border-[#DBE2DC] shadow-2xl text-center">
-          <AlertCircle className="w-16 h-16 text-[#E74C3C] mx-auto mb-4" />
-          <h2 className="text-2xl font-bold text-[#335765] mb-2">Ticket Not Found</h2>
-          <p className="text-[#556b7a] mb-6">{error || "Invalid ticket ID"}</p>
-          <Button
-            onClick={() => router.push("/")}
-            className="bg-gradient-to-r from-[#335765] to-[#74A8A4] text-white"
-          >
-            Go to Home
-          </Button>
+      <div className="min-h-screen bg-gradient-to-b from-[#F8F9F8] via-[#DBE2DC] to-[#F8F9F8] flex items-center justify-center p-4">
+        <Card className="max-w-lg w-full p-10 bg-white/95 backdrop-blur-xl border-2 border-[#DBE2DC] shadow-2xl text-center animate-scale-in">
+          {/* Animated Error Icon */}
+          <div className="relative mb-6">
+            {/* Outer Glow */}
+            <div className="absolute inset-0 rounded-full bg-[#E74C3C] opacity-20 blur-xl animate-pulse"></div>
+            {/* Main Icon Container */}
+            <div className="relative w-24 h-24 mx-auto bg-gradient-to-br from-[#E74C3C] via-[#E74C3C]/80 to-[#E74C3C]/60 rounded-full flex items-center justify-center shadow-lg transform hover:scale-110 transition-transform duration-300">
+              <AlertCircle className="w-12 h-12 text-white" />
+            </div>
+            {/* Orbiting Dot */}
+            <div className="absolute inset-0 animate-spin" style={{ animationDuration: '3s' }}>
+              <div className="absolute top-0 left-1/2 w-3 h-3 bg-[#E74C3C] rounded-full transform -translate-x-1/2 -translate-y-1 shadow-lg"></div>
+            </div>
+          </div>
+          
+          {/* Title */}
+          <h2 className="text-3xl font-bold bg-gradient-to-r from-[#E74C3C] to-[#E74C3C]/60 bg-clip-text text-transparent mb-3">
+            Ticket Not Found
+          </h2>
+          
+          {/* Description */}
+          <p className="text-[#556b7a] text-lg mb-8 leading-relaxed">
+            {error || "We couldn't find a ticket with that ID. Please check the tracking ID and try again."}
+          </p>
+          
+          {/* Action Buttons */}
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <Button
+              onClick={() => router.push("/")}
+              className="bg-gradient-to-r from-[#335765] to-[#74A8A4] text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 px-8 py-6 text-base font-semibold"
+            >
+              Go to Home
+            </Button>
+            <Button
+              onClick={() => router.push("/check-status")}
+              variant="outline"
+              className="border-2 border-[#335765] text-[#335765] hover:bg-[#335765] hover:text-white transition-all duration-300 hover:-translate-y-1 px-8 py-6 text-base font-semibold"
+            >
+              Check Another Ticket
+            </Button>
+          </div>
+          
+          {/* Help Text */}
+          <div className="mt-8 pt-6 border-t border-[#DBE2DC]">
+            <p className="text-sm text-[#74A8A4] font-medium">
+              Need help?{" "}
+              <a href="/contact" className="text-[#335765] hover:text-[#74A8A4] underline font-semibold">
+                Contact Support
+              </a>
+            </p>
+          </div>
         </Card>
       </div>
     );

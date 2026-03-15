@@ -177,7 +177,11 @@ class AutoResponderService:
         print(f"🤖 [AUTO-RESPONDER] Step 3: Searching knowledge base...")
         kb_result = await self.find_kb_answer(message_text, session)
 
-        if not kb_result:
+        kb_context = ""
+        if kb_result:
+            kb_context = f"\n\nKnowledge Base Results:\n{kb_result['answer']}"
+            print(f"✅ [AUTO-RESPONDER] KB found with confidence: {kb_result['confidence']}")
+        else:
             print(f"⚠️  [AUTO-RESPONDER] No confident answer in knowledge base")
             logger.info(f"⚠️  [AUTO-RESPONDER] No confident answer in knowledge base")
             # Continue without KB answer - will use FTE agent
@@ -186,159 +190,167 @@ class AutoResponderService:
         # Step 4: Generate response using FTE Agent
         print(f"🤖 [AUTO-RESPONDER] Step 4: Generating response with FTE Agent...")
         logger.info(f"🤖 [AUTO-RESPONDER] Step 4: Generating response with FTE Agent...")
-        
+
         try:
             # Import FTE agent here to avoid circular dependency
             from app.agent import create_fte_agent
-            
+
             fte_agent = create_fte_agent()
             print(f"🤖 [AUTO-RESPONDER] FTE Agent created: {fte_agent}")
-            
+
             # Get ticket for context
             ticket = await ticket_crud.get(session, id=ticket_id)
             print(f"🤖 [AUTO-RESPONDER] Ticket context: {ticket.subject if ticket else 'N/A'}")
-            
-            # Generate response
+
+            # Generate response WITH KNOWLEDGE BASE CONTEXT
             context = {
                 "ticket_id": str(ticket_id),
                 "customer_email": customer_email,
                 "sentiment_score": sentiment_score,
+                "knowledge_base": kb_context,  # Pass KB results to agent
             }
-            
+
             print(f"🤖 [AUTO-RESPONDER] Calling FTE agent.generate_response()...")
             logger.info(f"🤖 [AUTO-RESPONDER] Calling FTE agent.generate_response()...")
-            
+
             response_text = await fte_agent.generate_response(
                 input_text=message_text,
                 context=context,
             )
-            
+
             print(f"✅ [AUTO-RESPONDER] FTE Agent response generated: {response_text[:100]}...")
             logger.info(f"✅ [AUTO-RESPONDER] FTE Agent response generated: {response_text[:100]}...")
-            
+
         except Exception as e:
             print(f"❌ [AUTO-RESPONDER] FTE Agent error: {e}")
             logger.error(f"❌ [AUTO-RESPONDER] FTE Agent error: {e}", exc_info=True)
-            
-            # Smart fallback - analyze message for keywords
-            message_lower = message_text.lower()
-            
-            if "charg" in message_lower and ("twice" in message_lower or "double" in message_lower or "58" in message_lower or "29" in message_lower):
-                response_text = (
-                    "I completely understand your concern about being charged twice, and I sincerely apologize for the confusion. "
-                    "Let me explain what happened:\n\n"
-                    "When you upgrade mid-cycle, you see two charges:\n"
-                    "1. A prorated charge for the remainder of your previous billing period\n"
-                    "2. Your regular monthly subscription charge\n\n"
-                    "Your next charge on the 1st will be the standard $29/month.\n\n"
-                    "I'm sending you a detailed breakdown via email. If you'd like, I can also connect you with our billing specialist who can review your account in detail.\n\n"
-                    "Would you like me to:\n"
-                    "• Send a detailed invoice breakdown\n"
-                    "• Connect you with our billing team\n"
-                    "• Process a refund for the prorated amount\n\n"
-                    "Your satisfaction is our priority, and I'm here to make this right."
-                )
-            elif "refund" in message_lower or "cancel" in message_lower:
-                response_text = (
-                    "I understand you'd like a refund, and I want to help resolve this for you.\n\n"
-                    "Good news - we offer a 30-day money-back guarantee on all Pro and Enterprise plans. "
-                    "Since you're within that window, you're eligible for a full refund.\n\n"
-                    "I'm escalating this to our billing team who will:\n"
-                    "• Process your refund within 2-3 business days\n"
-                    "• Send confirmation to your email\n"
-                    "• Keep your account active until the end of the billing period\n\n"
-                    "Alternatively, I can offer you:\n"
-                    "• 50% off for the next 3 months\n"
-                    "• Free upgrade to Enterprise for 1 month\n"
-                    "• Extended 60-day trial to evaluate all features\n\n"
-                    "What would work best for you?"
-                )
-            elif "pricing" in message_lower or "cost" in message_lower or "plan" in message_lower:
-                response_text = (
-                    "Great question! Here's our current pricing:\n\n"
-                    "**Free Plan** - $0/month\n"
-                    "• Up to 3 projects\n"
-                    "• 5GB storage\n"
-                    "• Basic features\n\n"
-                    "**Pro Plan** - $29/month\n"
-                    "• Unlimited projects\n"
-                    "• Time tracking\n"
-                    "• 100GB storage\n"
-                    "• Email support\n\n"
-                    "**Enterprise Plan** - $79/month\n"
-                    "• Everything in Pro\n"
-                    "• Advanced analytics\n"
-                    "• 24/7 priority support\n"
-                    "• Custom integrations\n\n"
-                    "We also offer:\n"
-                    "• 20% discount for annual billing\n"
-                    "• 50% off for nonprofits\n"
-                    "• 14-day free trial on Pro plan\n\n"
-                    "Which plan are you interested in?"
-                )
+
+            # Smart fallback - use KB results directly if available
+            if kb_result and kb_result.get('answer'):
+                response_text = f"""I found the following information in our knowledge base:
+
+{kb_result['answer']}
+
+Would you like me to help you with anything else regarding this?"""
             else:
-                # Generic but helpful fallback - ONLY for complex/unclear messages
-                # For simple greetings like "hi", "hello", etc. - respond conversationally
-                if message_text.strip().lower() in ["hi", "hello", "hey", "good morning", "good afternoon", "good evening"]:
+                # Analyze message for keywords
+                message_lower = message_text.lower()
+
+                if "charg" in message_lower and ("twice" in message_lower or "double" in message_lower or "58" in message_lower or "29" in message_lower):
                     response_text = (
-                        "Hello! 👋 Thank you for reaching out. "
-                        "I'm here to help you with any questions or concerns you may have. "
-                        "Feel free to share more details about what you need assistance with, "
-                        "and I'll provide you with the best possible support."
+                        "I completely understand your concern about being charged twice, and I sincerely apologize for the confusion. "
+                        "Let me explain what happened:\n\n"
+                        "When you upgrade mid-cycle, you see two charges:\n"
+                        "1. A prorated charge for the remainder of your previous billing period\n"
+                        "2. Your regular monthly subscription charge\n\n"
+                        "Your next charge on the 1st will be the standard $29/month.\n\n"
+                        "I'm sending you a detailed breakdown via email. If you'd like, I can also connect you with our billing specialist who can review your account in detail.\n\n"
+                        "Would you like me to:\n"
+                        "• Send a detailed invoice breakdown\n"
+                        "• Connect you with our billing team\n"
+                        "• Process a refund for the prorated amount\n\n"
+                        "Your satisfaction is our priority, and I'm here to make this right."
                     )
-                elif len(message_text.strip()) < 10:
-                    # Very short message - ask for more details
+                elif "refund" in message_lower or "cancel" in message_lower:
                     response_text = (
-                        "Hi there! Thanks for your message. Could you please provide more details "
-                        "about what you need help with? I'm here to assist you with any questions "
-                        "about our product, pricing, features, or any issues you're experiencing."
+                        "I understand you'd like a refund, and I want to help resolve this for you.\n\n"
+                        "Good news - we offer a 30-day money-back guarantee on all Pro and Enterprise plans. "
+                        "Since you're within that window, you're eligible for a full refund.\n\n"
+                        "I'm escalating this to our billing team who will:\n"
+                        "• Process your refund within 2-3 business days\n"
+                        "• Send confirmation to your email\n"
+                        "• Keep your account active until the end of the billing period\n\n"
+                        "Alternatively, I can offer you:\n"
+                        "• 50% off for the next 3 months\n"
+                        "• Free upgrade to Enterprise for 1 month\n"
+                        "• Extended 60-day trial to evaluate all features\n\n"
+                        "What would work best for you?"
+                    )
+                elif "pricing" in message_lower or "cost" in message_lower or "plan" in message_lower:
+                    response_text = (
+                        "Great question! Here's our current pricing:\n\n"
+                        "**Free Plan** - $0/month\n"
+                        "• Up to 3 projects\n"
+                        "• 5GB storage\n"
+                        "• Basic features\n\n"
+                        "**Pro Plan** - $29/month\n"
+                        "• Unlimited projects\n"
+                        "• Time tracking\n"
+                        "• 100GB storage\n"
+                        "• Email support\n\n"
+                        "**Enterprise Plan** - $79/month\n"
+                        "• Everything in Pro\n"
+                        "• Advanced analytics\n"
+                        "• 24/7 priority support\n"
+                        "• Custom integrations\n\n"
+                        "We also offer:\n"
+                        "• 20% discount for annual billing\n"
+                        "• 50% off for nonprofits\n"
+                        "• 14-day free trial on Pro plan\n\n"
+                        "Which plan are you interested in?"
                     )
                 else:
-                    # Complex message - use generic template
+                    # Generic but helpful fallback
                     response_text = (
-                        f"Thank you for your message! I've received your inquiry. "
-                        "I'm reviewing your request and will provide a detailed response shortly. "
+                        "Thank you for your message! I'm reviewing your request and will provide a detailed response shortly. "
                         "Our team is committed to resolving this for you as quickly as possible.\n\n"
                         "Is there anything else you'd like to add to your ticket?"
                     )
         
         # Step 5: Send response via appropriate channel
+        # Get channel from the first message in conversation
         print(f"🤖 [AUTO-RESPONDER] Step 5: Sending response via channel...")
-        channel = "web"  # Default to web
         
+        # Get the first message to determine channel
+        from app.crud import message_crud
+        messages = await message_crud.get_by_conversation(session, conversation_id=ticket.conversation_id, limit=1)
+        channel = messages[0].channel if messages else "web"
+        print(f"🤖 [AUTO-RESPONDER] Message channel: {channel}")
+        
+        # ONLY send WhatsApp message if channel is explicitly 'whatsapp'
+        whatsapp_sent = False
+        email_sent = False
+
         try:
-            # Try WhatsApp first if phone available
-            if customer_phone:
+            # WhatsApp: ONLY if channel is 'whatsapp' AND phone is available
+            if channel == "whatsapp" and customer_phone:
                 print(f"📱 [AUTO-RESPONDER] Sending via WhatsApp to {customer_phone}")
                 try:
                     await ultramsg_service.send_message(
                         phone=customer_phone,
                         message=response_text,
                     )
-                    channel = "whatsapp"
+                    whatsapp_sent = True
                     print(f"✅ [AUTO-RESPONDER] WhatsApp message sent successfully")
                 except Exception as whatsapp_error:
                     print(f"⚠️  [AUTO-RESPONDER] WhatsApp send failed (silent fail): {whatsapp_error}")
                     logger.warning(f"WhatsApp send failed (silent fail): {whatsapp_error}")
                     # Silent fail - continue to save in conversation
-                    channel = "web"
-            elif customer_email:
+            
+            # Email: ONLY if channel is 'email' OR 'web' (web gets email confirmation)
+            # NEVER send email for WhatsApp channel
+            elif channel in ["email", "web"] and customer_email:
                 print(f"📧 [AUTO-RESPONDER] Sending via Email to {customer_email}")
-                # Fallback to email
                 try:
                     await gmail_service.send_email(
                         to=customer_email,
                         subject=f"Re: Ticket {str(ticket_id)[:8]}",
                         body=response_text,
                     )
-                    channel = "email"
+                    email_sent = True
                     print(f"✅ [AUTO-RESPONDER] Email sent successfully")
                 except Exception as email_error:
-                    print(f"⚠️  [AUTO-RESPONDER] Email send failed (silent fail): {email_error}")
-                    logger.warning(f"Email send failed (silent fail): {email_error}")
-                    channel = "web"
+                    # Silent fail for email - don't break the flow
+                    print(f"⚠️  [AUTO-RESPONDER] Email send failed (silent): {type(email_error).__name__}")
+                    # Don't log full traceback for email failures
+            
+            # Determine final channel for logging
+            if whatsapp_sent:
+                channel = "whatsapp"
+            elif email_sent:
+                channel = "email"
             else:
-                print(f"🌐 [AUTO-RESPONDER] No phone or email, will save to conversation only")
+                channel = "web"
 
             # Step 6: Log auto-response in ticket conversation (ALWAYS do this for web channel)
             print(f"🤖 [AUTO-RESPONDER] Step 6: Saving response to conversation...")

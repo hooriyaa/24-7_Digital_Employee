@@ -4,8 +4,8 @@ WhatsApp Webhook Handler - UltraMsg Integration.
 Receives incoming WhatsApp messages and sends responses.
 """
 import logging
-from typing import Annotated
-from fastapi import APIRouter, Depends, HTTPException, status, BackgroundTasks
+from typing import Annotated, Any
+from fastapi import APIRouter, Depends, HTTPException, status, BackgroundTasks, Form, Request
 from sqlalchemy.ext.asyncio import AsyncSession
 from pydantic import BaseModel
 
@@ -19,7 +19,7 @@ from app.services.ultramsg import ultramsg_service
 
 logger = logging.getLogger(__name__)
 
-router = APIRouter(prefix="/whatsapp", tags=["WhatsApp Webhook"])
+router = APIRouter(tags=["WhatsApp Webhook"])
 
 
 class WhatsAppWebhook(BaseModel):
@@ -32,40 +32,93 @@ class WhatsAppWebhook(BaseModel):
 
 @router.post("/webhook")
 async def whatsapp_incoming_webhook(
-    webhook_data: WhatsAppWebhook,
-    background_tasks: BackgroundTasks,
-    db: Annotated[AsyncSession, Depends(get_db_session)],
+    request: Request,
+    background_tasks: BackgroundTasks = None,
+    db: Annotated[AsyncSession, Depends(get_db_session)] = None,
 ) -> dict:
     """
     Receive incoming WhatsApp messages via UltraMsg webhook.
-    
-    This endpoint:
-    1. Gets or creates customer by phone
-    2. Creates or gets active ticket
-    3. Saves message to conversation
-    4. Triggers AI auto-responder
-    5. Sends response via WhatsApp
-    
-    Args:
-        webhook_data: WhatsApp message data
-        background_tasks: FastAPI background tasks
-        db: Database session
-        
-    Returns:
-        dict: Success response
     """
-    logger.info(f"📱 WhatsApp webhook received from: {webhook_data.phone}")
-    logger.info(f"💬 Message: {webhook_data.body[:50]}...")
+    # Try to get data from both JSON and form-data
+    form_data = {}
+    json_data = {}
     
+    # Try form-data first
+    try:
+        form_data = await request.form()
+        logger.info(f"📋 FORM DATA: {dict(form_data)}")
+    except Exception as e:
+        logger.debug(f"Not form-data: {e}")
+    
+    # Try JSON
+    try:
+        json_data = await request.json()
+        logger.info(f"📋 JSON DATA: {json_data}")
+    except Exception as e:
+        logger.debug(f"Not JSON: {e}")
+    
+    # Combine both
+    all_data = {**dict(form_data), **json_data}
+    logger.info(f"📋 COMBINED DATA: {all_data}")
+    
+    # UltraMsg specific: data is nested inside 'data' field
+    nested_data = all_data.get("data", {})
+    logger.info(f"📋 NESTED DATA: {nested_data}")
+    
+    # Handle different field names from UltraMsg
+    customer_phone = (
+        all_data.get("phone") or 
+        all_data.get("from") or 
+        nested_data.get("from") or 
+        nested_data.get("phone") or 
+        all_data.get("sender") or 
+        all_data.get("to") or 
+        all_data.get("phone_number") or
+        ""
+    )
+    message_body = (
+        all_data.get("body") or 
+        all_data.get("text") or 
+        all_data.get("message") or 
+        nested_data.get("body") or 
+        nested_data.get("text") or 
+        nested_data.get("message") or 
+        all_data.get("content") or 
+        all_data.get("message_body") or
+        ""
+    )
+    message_type = all_data.get("type", "text") or nested_data.get("type", "text")
+    
+    logger.info(f"📱 WhatsApp webhook received from: {customer_phone}")
+    logger.info(f"💬 Message: {message_body[:50] if message_body else 'EMPTY'}...")
+    logger.info(f"📋 Parsed data - phone: '{customer_phone}', body: '{message_body}', type: '{message_type}'")
+    
+    if not customer_phone or not message_body:
+        logger.warning(f"⚠️  Missing phone or body in webhook data")
+        logger.warning(f"📋 Available fields: {list(all_data.keys())}")
+        logger.warning(f"📋 Nested fields: {list(nested_data.keys()) if nested_data else 'None'}")
+        return {"status": "error", "message": "Missing phone or body", "received_fields": list(all_data.keys())}
+    
+    # Create webhook data object
+    webhook_data = WhatsAppWebhook(phone=customer_phone, body=message_body, type=message_type)
+
     try:
         # Step 1: Get or create customer by phone
-        customer = await customer_crud.get_or_create_by_phone(
-            db,
-            phone=webhook_data.phone,
-            name=f"WhatsApp User {webhook_data.phone[-4:]}",
-        )
+        # Try to get customer by phone first
+        customer = await customer_crud.get_by_phone(db, phone=customer_phone)
+        
+        if not customer:
+            # Create new customer with phone
+            from app.crud.customer import CustomerCreate
+            customer_data = CustomerCreate(
+                email=f"whatsapp_{customer_phone}@temp.local",
+                name=f"WhatsApp User {customer_phone[-4:]}",
+                phone=customer_phone,
+            )
+            customer = await customer_crud.create(db, obj_in=customer_data)
+        
         customer_id = customer.id
-        logger.info(f"✅ Customer obtained: {customer_id}")
+        logger.info(f"✅ Customer obtained: {customer_id} (phone: {customer_phone})")
         
         # Step 2: Get or create active ticket for this customer
         existing_tickets = await ticket_crud.get_multi(

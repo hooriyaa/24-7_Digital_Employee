@@ -17,6 +17,7 @@ from app.crud import ticket_crud, customer_crud, message_crud, conversation_crud
 from app.crud.ticket import TicketCreate
 from app.crud.message import MessageCreate
 from app.crud.conversation import ConversationCreate
+from app.crud.customer import CustomerCreate
 from app.models.ticket import Ticket
 from app.models.customer import Customer
 from app.models.conversation import Conversation
@@ -364,13 +365,26 @@ async def create_ticket(
     logger.info(f"   - customer_name: {request.customer_name}")
 
     try:
-        # Step 1: Validate required fields
-        if not request.customer_email:
-            logger.error("❌ customer_email is required but not provided")
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="customer_email is required",
-            )
+        # Step 1: Validate required fields based on channel
+        # For WhatsApp channel: phone is required, email is optional
+        # For Web/Email channel: email is required
+        if request.channel == "whatsapp":
+            if not request.customer_phone:
+                logger.error("❌ customer_phone is required for WhatsApp channel")
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail="WhatsApp number is required for WhatsApp channel",
+                )
+            logger.info(f"📱 WhatsApp channel - Phone: {request.customer_phone}")
+        else:
+            # Web or Email channel - email required
+            if not request.customer_email:
+                logger.error("❌ customer_email is required for Web/Email channel")
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail="Email is required for Web/Email channel",
+                )
+            logger.info(f"📧 Email channel - Email: {request.customer_email}")
 
         if not request.subject:
             logger.error("❌ subject is required but not provided")
@@ -379,18 +393,36 @@ async def create_ticket(
                 detail="subject is required",
             )
 
-        logger.info(f"📧 Customer email: {request.customer_email}")
         logger.info(f"👤 Customer name: {request.customer_name}")
         
-        # Step 2: Get or create customer by email
-        customer = await customer_crud.get_or_create(
-            db,
-            email=request.customer_email,
-            name=request.customer_name or request.customer_email.split("@")[0],
-            phone=request.customer_phone,
-        )
-        customer_id = customer.id
-        logger.info(f"✅ Customer obtained: {customer_id} (email: {request.customer_email})")
+        # Step 2: Get or create customer
+        # For WhatsApp: use phone as identifier, email optional
+        # For Web/Email: use email as identifier
+        if request.channel == "whatsapp":
+            # WhatsApp channel - try to get customer by phone first
+            customer = await customer_crud.get_by_phone(db, phone=request.customer_phone)
+            
+            if not customer:
+                # Create new customer with phone
+                customer_data = CustomerCreate(
+                    email=request.customer_email or f"whatsapp_{request.customer_phone}@temp.local",
+                    name=request.customer_name or f"WhatsApp User {request.customer_phone[-4:]}",
+                    phone=request.customer_phone,
+                )
+                customer = await customer_crud.create(db, obj_in=customer_data)
+            
+            customer_id = customer.id
+            logger.info(f"✅ Customer obtained: {customer_id} (phone: {request.customer_phone})")
+        else:
+            # Web/Email channel - create customer with email
+            customer = await customer_crud.get_or_create(
+                db,
+                email=request.customer_email,
+                name=request.customer_name or request.customer_email.split("@")[0],
+                phone=request.customer_phone,
+            )
+            customer_id = customer.id
+            logger.info(f"✅ Customer obtained: {customer_id} (email: {request.customer_email})")
 
         # Step 3: Create conversation
         conversation_data = ConversationCreate(
@@ -445,17 +477,22 @@ async def create_ticket(
                 customer_email=request.customer_email,
                 customer_phone=customer.phone,
             )
-            
-            # Send confirmation email
-            background_tasks.add_task(
-                send_ticket_confirmation_email,
-                customer_email=request.customer_email,
-                customer_name=request.customer_name or "Valued Customer",
-                ticket_id=str(ticket.id),
-                subject=ticket.subject,
-                message=request.message,
-            )
-            
+
+            # Send confirmation email ONLY for web/email channels (NOT WhatsApp)
+            if request.channel in ["web", "email"] and request.customer_email:
+                background_tasks.add_task(
+                    send_ticket_confirmation_email,
+                    customer_email=request.customer_email,
+                    customer_name=request.customer_name or "Valued Customer",
+                    ticket_id=str(ticket.id),
+                    subject=ticket.subject,
+                    message=request.message,
+                    channel=request.channel,
+                )
+                logger.info(f"📧 Confirmation email task added for channel: {request.channel}")
+            else:
+                logger.info(f"📧 Skipping confirmation email for channel: {request.channel}")
+
             logger.info(f"🤖 Auto-responder background task added")
             logger.info(f"📧 Email confirmation background task added")
         else:

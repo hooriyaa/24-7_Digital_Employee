@@ -141,8 +141,18 @@ export default function DashboardPage() {
     return (
       <div className="p-8 flex items-center justify-center h-screen">
         <div className="text-center">
-          <div className="w-16 h-16 border-4 border-[#335765] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-[#335765] font-medium">Loading dashboard...</p>
+          {/* Beautiful 3D Loading Animation */}
+          <div className="relative w-20 h-20 mx-auto mb-6">
+            {/* Outer Ring */}
+            <div className="absolute inset-0 rounded-full border-4 border-[#74A8A4]/20 border-t-[#74A8A4] animate-spin"></div>
+            {/* Middle Ring */}
+            <div className="absolute inset-2 rounded-full border-4 border-[#B6D9E0]/20 border-r-[#B6D9E0] animate-spin" style={{ animationDirection: 'reverse', animationDuration: '0.8s' }}></div>
+            {/* Inner Dot */}
+            <div className="absolute inset-4 rounded-full bg-gradient-to-br from-[#335765] to-[#74A8A4] animate-ping" style={{ animationDuration: '1.5s' }}></div>
+            {/* Center Glow */}
+            <div className="absolute inset-0 rounded-full bg-gradient-to-br from-[#74A8A4] to-[#B6D9E0] opacity-20 blur-md animate-pulse"></div>
+          </div>
+          <p className="text-[#335765] font-medium text-lg">Loading dashboard...</p>
         </div>
       </div>
     );

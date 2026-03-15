@@ -19,6 +19,7 @@ from app.api.routes_tickets import router as tickets_router
 from app.api.routes_conversations import router as conversations_router
 from app.api.webhooks import router as webhooks_router
 from app.services.gmail_polling import gmail_polling_service
+from app.services.whatsapp_polling import whatsapp_polling_service
 import asyncio
 
 
@@ -43,12 +44,20 @@ async def lifespan(app: FastAPI):
         # Initialize database engine
         await init_db_engine()
         print("✅ Database engine initialized")
-        
+
         # Start Gmail polling in background
-        if settings.debug:  # Only in development
-            print("📧 Starting Gmail polling service...")
-            asyncio.create_task(gmail_polling_service.start_polling())
-            print("✅ Gmail polling started (checking every 30 seconds)")
+        # Note: Disabled temporarily due to network issues
+        # if settings.debug:  # Only in development
+        #     print("📧 Starting Gmail polling service...")
+        #     asyncio.create_task(gmail_polling_service.start_polling())
+        #     print("✅ Gmail polling started (checking every 30 seconds)")
+
+        # Start WhatsApp polling in background
+        # Note: Disabled - using webhook instead (more reliable)
+        # if settings.debug:  # Only in development
+        #     print("📱 Starting WhatsApp polling service...")
+        #     asyncio.create_task(whatsapp_polling_service.start_polling())
+        #     print("✅ WhatsApp polling started (checking every 30 seconds)")
 
     except Exception as e:
         print(f"❌ Startup error: {e}")
@@ -59,6 +68,7 @@ async def lifespan(app: FastAPI):
     # Shutdown: Clean up resources
     print("👋 Shutting down Customer Success Digital FTE API...")
     gmail_polling_service.stop_polling()
+    whatsapp_polling_service.stop_polling()
     await close_db_engine()
 
 

@@ -320,6 +320,15 @@ export default function Home() {
     setStatus({ type: "submitting", message: "Submitting..." });
 
     try {
+      // Validate WhatsApp channel
+      if (selectedChannel === "whatsapp" && !formData.phone) {
+        setStatus({
+          type: "error",
+          message: "WhatsApp number is required for WhatsApp channel",
+        });
+        return;
+      }
+
       const response = await fetch("http://localhost:8000/api/v1/tickets", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -339,7 +348,9 @@ export default function Home() {
         console.log("✅ Ticket created:", data);
         setStatus({
           type: "success",
-          message: "🎉 Thank you! Your request has been submitted.",
+          message: selectedChannel === "whatsapp" 
+            ? "🎉 Your WhatsApp message has been sent! Check your WhatsApp for a response."
+            : "🎉 Thank you! Your request has been submitted.",
           ticketId: data.id || data.ticket_id,
         });
         setFormData({ name: "", email: "", phone: "", subject: "", category: "general", priority: "medium", message: "" });
@@ -347,7 +358,10 @@ export default function Home() {
       } else {
         const errorData = await response.json();
         console.error("Backend error:", errorData);
-        throw new Error("Failed to create ticket");
+        setStatus({
+          type: "error",
+          message: errorData.detail || "Failed to create ticket",
+        });
       }
     } catch (error) {
       console.error("Submission error:", error);
@@ -1207,10 +1221,17 @@ export default function Home() {
                     >
                       {status.type === "submitting" ? (
                         <span className="flex items-center gap-3">
-                          <svg className="animate-spin h-6 w-6" viewBox="0 0 24 24">
-                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                          </svg>
+                          {/* Beautiful 3D Loading Animation */}
+                          <div className="relative w-6 h-6">
+                            {/* Outer Ring */}
+                            <div className="absolute inset-0 rounded-full border-2 border-[#74A8A4]/30 border-t-[#74A8A4] animate-spin"></div>
+                            {/* Middle Ring */}
+                            <div className="absolute inset-1 rounded-full border-2 border-[#B6D9E0]/30 border-r-[#B6D9E0] animate-spin" style={{ animationDirection: 'reverse', animationDuration: '0.8s' }}></div>
+                            {/* Inner Dot */}
+                            <div className="absolute inset-2 rounded-full bg-gradient-to-br from-[#335765] to-[#74A8A4] animate-ping" style={{ animationDuration: '1.5s' }}></div>
+                            {/* Center Glow */}
+                            <div className="absolute inset-0 rounded-full bg-gradient-to-br from-[#74A8A4] to-[#B6D9E0] opacity-20 blur-md animate-pulse"></div>
+                          </div>
                           Submitting...
                         </span>
                       ) : (
@@ -1233,8 +1254,21 @@ export default function Home() {
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fade-in">
           <Card className="max-w-lg w-full bg-white/95 backdrop-blur-xl border-2 border-[#74A8A4] shadow-2xl animate-scale-in">
             <div className="p-6 text-center">
-              <div className="w-16 h-16 bg-gradient-to-br from-[#74A8A4] to-[#335765] rounded-full flex items-center justify-center mx-auto mb-4 animate-bounce">
-                <CheckCircle2 className="w-8 h-8 text-white" />
+              {/* Beautiful 3D Success Icon */}
+              <div className="relative w-20 h-20 mx-auto mb-4">
+                {/* Outer Glow Ring */}
+                <div className="absolute inset-0 rounded-full bg-gradient-to-br from-[#74A8A4] to-[#B6D9E0] opacity-30 blur-xl animate-pulse"></div>
+                {/* Main Circle */}
+                <div className="relative w-20 h-20 bg-gradient-to-br from-[#74A8A4] via-[#335765] to-[#B6D9E0] rounded-full flex items-center justify-center shadow-lg transform hover:scale-110 transition-transform duration-300">
+                  <CheckCircle2 className="w-10 h-10 text-white transform hover:scale-110 transition-transform duration-300" />
+                </div>
+                {/* Orbiting Dots */}
+                <div className="absolute inset-0 animate-spin" style={{ animationDuration: '3s' }}>
+                  <div className="absolute top-0 left-1/2 w-3 h-3 bg-[#74A8A4] rounded-full transform -translate-x-1/2 -translate-y-1 shadow-lg"></div>
+                </div>
+                <div className="absolute inset-0 animate-spin" style={{ animationDuration: '3s', animationDirection: 'reverse' }}>
+                  <div className="absolute bottom-0 left-1/2 w-2.5 h-2.5 bg-[#B6D9E0] rounded-full transform -translate-x-1/2 translate-y-1 shadow-lg"></div>
+                </div>
               </div>
               <h3 className="text-2xl font-bold text-[#335765] mb-2">🎉 Submitted!</h3>
               <p className="text-[#556b7a] text-sm mb-4">{status.message}</p>
