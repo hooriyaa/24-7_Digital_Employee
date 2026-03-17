@@ -786,30 +786,30 @@ export default function Home() {
             <div className="channel-card-email flex flex-col lg:flex-row items-center gap-8 lg:gap-16">
               <div className="lg:w-1/2 order-2 lg:order-1">
                 <div className="relative">
-                  {/* 3D Email Animation Container */}
-                  <div className="email-3d-container relative w-full h-[400px] flex items-center justify-center">
-                    {/* Floating Email Icons */}
-                    <div className="email-float-1 absolute top-10 left-10 w-20 h-20 bg-gradient-to-br from-[#335765] to-[#74A8A4] rounded-2xl flex items-center justify-center shadow-2xl animate-float">
-                      <Mail className="w-10 h-10 text-white" />
+                  {/* 3D Email Animation Container - Responsive */}
+                  <div className="email-3d-container relative w-full h-[350px] sm:h-[400px] md:h-[450px] flex items-center justify-center overflow-visible">
+                    {/* Floating Email Icons - Responsive */}
+                    <div className="email-float-1 absolute top-4 left-4 sm:top-10 sm:left-10 w-16 h-16 sm:w-20 md:w-24 md:h-24 bg-gradient-to-br from-[#335765] to-[#74A8A4] rounded-xl sm:rounded-2xl flex items-center justify-center shadow-2xl animate-float">
+                      <Mail className="w-8 h-8 sm:w-10 md:w-12 md:h-12 text-white" />
                     </div>
-                    <div className="email-float-2 absolute top-1/2 left-1/4 w-16 h-16 bg-gradient-to-br from-[#74A8A4] to-[#B6D9E0] rounded-xl flex items-center justify-center shadow-xl animate-float-delayed">
-                      <Mail className="w-8 h-8 text-white" />
+                    <div className="email-float-2 absolute top-1/2 left-1/4 w-12 h-12 sm:w-16 md:w-20 md:h-20 bg-gradient-to-br from-[#74A8A4] to-[#B6D9E0] rounded-xl sm:rounded-2xl flex items-center justify-center shadow-xl animate-float-delayed">
+                      <Mail className="w-6 h-6 sm:w-8 md:w-10 md:h-10 text-white" />
                     </div>
-                    <div className="email-float-3 absolute bottom-20 right-10 w-14 h-14 bg-gradient-to-br from-[#B6D9E0] to-[#335765] rounded-lg flex items-center justify-center shadow-lg animate-float">
-                      <Mail className="w-6 h-6 text-white" />
+                    <div className="email-float-3 absolute bottom-16 right-4 sm:bottom-20 sm:right-10 w-10 h-10 sm:w-14 md:w-18 md:h-18 bg-gradient-to-br from-[#B6D9E0] to-[#335765] rounded-lg sm:rounded-xl flex items-center justify-center shadow-lg animate-float">
+                      <Mail className="w-5 h-5 sm:w-6 md:w-8 md:h-8 text-white" />
                     </div>
-                    {/* Central 3D Element */}
+                    {/* Central 3D Element - Responsive */}
                     <div className="email-central-3d relative z-10">
-                      <div className="w-48 h-48 bg-gradient-to-br from-[#335765] via-[#74A8A4] to-[#B6D9E0] rounded-3xl flex items-center justify-center shadow-2xl transform rotate-12 hover:rotate-0 transition-transform duration-500">
-                        <div className="w-40 h-40 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center">
-                          <Mail className="w-20 h-20 text-white" />
+                      <div className="w-40 h-40 sm:w-48 md:w-56 md:h-56 bg-gradient-to-br from-[#335765] via-[#74A8A4] to-[#B6D9E0] rounded-3xl flex items-center justify-center shadow-2xl transform rotate-12 hover:rotate-0 transition-transform duration-500">
+                        <div className="w-32 h-32 sm:w-40 md:w-48 md:h-48 bg-white/20 backdrop-blur-sm rounded-2xl sm:rounded-3xl flex items-center justify-center">
+                          <Mail className="w-16 h-16 sm:w-20 md:w-24 md:h-24 text-white" />
                         </div>
                       </div>
                     </div>
-                    {/* Particle Effects */}
-                    <div className="email-particle-1 absolute top-5 right-1/4 w-3 h-3 bg-[#74A8A4] rounded-full animate-ping"></div>
-                    <div className="email-particle-2 absolute bottom-1/3 left-10 w-2 h-2 bg-[#B6D9E0] rounded-full animate-ping delay-300"></div>
-                    <div className="email-particle-3 absolute top-1/3 right-10 w-2.5 h-2.5 bg-[#335765] rounded-full animate-ping delay-500"></div>
+                    {/* Particle Effects - Responsive */}
+                    <div className="email-particle-1 absolute top-4 right-1/4 w-2.5 h-2.5 sm:w-3 md:w-4 md:h-4 bg-[#74A8A4] rounded-full animate-ping"></div>
+                    <div className="email-particle-2 absolute bottom-1/3 left-6 sm:left-10 w-2 h-2 sm:w-2.5 md:w-3 md:h-3 bg-[#B6D9E0] rounded-full animate-ping delay-300"></div>
+                    <div className="email-particle-3 absolute top-1/3 right-6 sm:right-10 w-2.5 h-2.5 sm:w-3 md:w-3.5 md:h-3.5 bg-[#335765] rounded-full animate-ping delay-500"></div>
                   </div>
                 </div>
               </div>
@@ -867,30 +867,30 @@ export default function Home() {
               </div>
               <div className="lg:w-1/2">
                 <div className="relative">
-                  {/* 3D WhatsApp Animation Container */}
-                  <div className="whatsapp-3d-container relative w-full h-[400px] flex items-center justify-center">
-                    {/* Floating Chat Bubbles */}
-                    <div className="whatsapp-bubble-1 absolute top-10 left-10 p-4 bg-gradient-to-br from-[#74A8A4] to-[#B6D9E0] rounded-2xl rounded-bl-sm shadow-xl animate-float">
-                      <MessageCircle className="w-8 h-8 text-white" />
+                  {/* 3D WhatsApp Animation Container - Responsive */}
+                  <div className="whatsapp-3d-container relative w-full h-[350px] sm:h-[400px] md:h-[450px] flex items-center justify-center overflow-visible">
+                    {/* Floating Chat Bubbles - Responsive */}
+                    <div className="whatsapp-bubble-1 absolute top-4 left-4 sm:top-10 sm:left-10 p-3 sm:p-4 md:p-5 bg-gradient-to-br from-[#74A8A4] to-[#B6D9E0] rounded-2xl sm:rounded-3xl rounded-bl-sm shadow-xl animate-float">
+                      <MessageCircle className="w-6 h-6 sm:w-8 md:w-10 md:h-10 text-white" />
                     </div>
-                    <div className="whatsapp-bubble-2 absolute top-1/3 right-16 p-3 bg-gradient-to-br from-[#B6D9E0] to-[#74A8A4] rounded-2xl rounded-br-sm shadow-lg animate-float-delayed">
-                      <MessageCircle className="w-6 h-6 text-white" />
+                    <div className="whatsapp-bubble-2 absolute top-1/3 right-10 sm:right-16 p-2.5 sm:p-3 md:p-4 bg-gradient-to-br from-[#B6D9E0] to-[#74A8A4] rounded-2xl sm:rounded-3xl rounded-br-sm shadow-lg animate-float-delayed">
+                      <MessageCircle className="w-5 h-5 sm:w-6 md:w-8 md:h-8 text-white" />
                     </div>
-                    <div className="whatsapp-bubble-3 absolute bottom-20 left-1/4 p-2.5 bg-gradient-to-br from-[#335765] to-[#74A8A4] rounded-2xl rounded-bl-sm shadow-md animate-float">
-                      <MessageCircle className="w-5 h-5 text-white" />
+                    <div className="whatsapp-bubble-3 absolute bottom-16 left-1/4 p-2 sm:p-2.5 md:p-3 bg-gradient-to-br from-[#335765] to-[#74A8A4] rounded-2xl sm:rounded-3xl rounded-bl-sm shadow-md animate-float">
+                      <MessageCircle className="w-4 h-4 sm:w-5 md:w-7 md:h-7 text-white" />
                     </div>
-                    {/* Central 3D Element */}
+                    {/* Central 3D Element - Responsive */}
                     <div className="whatsapp-central-3d relative z-10">
-                      <div className="w-48 h-48 bg-gradient-to-br from-[#74A8A4] via-[#B6D9E0] to-[#335765] rounded-full flex items-center justify-center shadow-2xl animate-pulse-slow">
-                        <div className="w-40 h-40 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center">
-                          <Smartphone className="w-20 h-20 text-white" />
+                      <div className="w-40 h-40 sm:w-48 md:w-56 md:h-56 bg-gradient-to-br from-[#74A8A4] via-[#B6D9E0] to-[#335765] rounded-full flex items-center justify-center shadow-2xl animate-pulse-slow">
+                        <div className="w-32 h-32 sm:w-40 md:w-48 md:h-48 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center">
+                          <Smartphone className="w-16 h-16 sm:w-20 md:w-24 md:h-24 text-white" />
                         </div>
                       </div>
                     </div>
-                    {/* Message Particles */}
-                    <div className="whatsapp-msg-1 absolute top-5 right-1/3 w-3 h-3 bg-[#74A8A4] rounded-full animate-ping"></div>
-                    <div className="whatsapp-msg-2 absolute bottom-1/4 left-16 w-2 h-2 bg-[#B6D9E0] rounded-full animate-ping delay-200"></div>
-                    <div className="whatsapp-msg-3 absolute top-1/4 right-10 w-2.5 h-2.5 bg-[#335765] rounded-full animate-ping delay-400"></div>
+                    {/* Message Particles - Responsive */}
+                    <div className="whatsapp-msg-1 absolute top-4 right-1/3 w-2.5 h-2.5 sm:w-3 md:w-4 md:h-4 bg-[#74A8A4] rounded-full animate-ping"></div>
+                    <div className="whatsapp-msg-2 absolute bottom-1/4 left-10 sm:left-16 w-2 h-2 sm:w-2.5 md:w-3 md:h-3 bg-[#B6D9E0] rounded-full animate-ping delay-200"></div>
+                    <div className="whatsapp-msg-3 absolute top-1/4 right-10 sm:right-16 w-2.5 h-2.5 sm:w-3 md:w-3.5 md:h-3.5 bg-[#335765] rounded-full animate-ping delay-400"></div>
                   </div>
                 </div>
               </div>
@@ -900,41 +900,41 @@ export default function Home() {
             <div className="channel-card-webform flex flex-col lg:flex-row items-center gap-8 lg:gap-16">
               <div className="lg:w-1/2 order-2 lg:order-1">
                 <div className="relative">
-                  {/* 3D Web Form Animation Container */}
-                  <div className="webform-3d-container relative w-full h-[400px] flex items-center justify-center">
-                    {/* Floating Form Elements */}
-                    <div className="webform-element-1 absolute top-10 left-16 w-24 h-12 bg-gradient-to-r from-[#7F543D] to-[#335765] rounded-lg shadow-xl animate-float flex items-center px-4">
-                      <div className="w-16 h-3 bg-white/30 rounded"></div>
+                  {/* 3D Web Form Animation Container - Responsive */}
+                  <div className="webform-3d-container relative w-full h-[350px] sm:h-[400px] md:h-[450px] flex items-center justify-center overflow-visible">
+                    {/* Floating Form Elements - Responsive */}
+                    <div className="webform-element-1 absolute top-6 left-6 sm:top-10 sm:left-16 w-20 h-10 sm:w-24 sm:h-12 md:w-28 md:h-14 bg-gradient-to-r from-[#7F543D] to-[#335765] rounded-lg sm:rounded-xl shadow-xl animate-float flex items-center px-3 sm:px-4">
+                      <div className="w-12 h-2 sm:w-16 sm:h-2.5 md:w-20 md:h-3 bg-white/30 rounded"></div>
                     </div>
-                    <div className="webform-element-2 absolute top-1/2 right-10 w-32 h-10 bg-gradient-to-r from-[#335765] to-[#74A8A4] rounded-lg shadow-lg animate-float-delayed flex items-center px-4">
-                      <div className="w-20 h-2.5 bg-white/30 rounded"></div>
+                    <div className="webform-element-2 absolute top-1/2 right-6 sm:right-10 w-24 h-8 sm:w-32 sm:h-10 md:w-36 md:h-12 bg-gradient-to-r from-[#335765] to-[#74A8A4] rounded-lg sm:rounded-xl shadow-lg animate-float-delayed flex items-center px-3 sm:px-4">
+                      <div className="w-14 h-2 sm:w-20 sm:h-2.5 md:w-24 md:h-3 bg-white/30 rounded"></div>
                     </div>
-                    <div className="webform-element-3 absolute bottom-20 left-1/4 w-28 h-16 bg-gradient-to-r from-[#74A8A4] to-[#B6D9E0] rounded-lg shadow-md animate-float flex items-center justify-center p-3">
-                      <div className="space-y-2 w-full">
-                        <div className="w-full h-2 bg-white/30 rounded"></div>
-                        <div className="w-2/3 h-2 bg-white/30 rounded"></div>
+                    <div className="webform-element-3 absolute bottom-16 left-1/4 w-24 h-14 sm:w-28 sm:h-16 md:w-32 md:h-20 bg-gradient-to-r from-[#74A8A4] to-[#B6D9E0] rounded-lg sm:rounded-xl shadow-md animate-float flex items-center justify-center p-3 sm:p-4">
+                      <div className="space-y-2 sm:space-y-3 w-full">
+                        <div className="w-full h-2 sm:h-2.5 md:h-3 bg-white/30 rounded"></div>
+                        <div className="w-2/3 h-2 sm:h-2.5 md:h-3 bg-white/30 rounded"></div>
                       </div>
                     </div>
-                    {/* Central 3D Element - Form Card */}
+                    {/* Central 3D Element - Form Card - Responsive */}
                     <div className="webform-central-3d relative z-10">
-                      <div className="w-56 h-56 bg-gradient-to-br from-[#7F543D] via-[#335765] to-[#74A8A4] rounded-3xl flex items-center justify-center shadow-2xl transform rotate-6 hover:rotate-0 transition-transform duration-500">
-                        <div className="w-48 h-48 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center p-4">
-                          <div className="space-y-3 w-full">
-                            <div className="w-full h-4 bg-white/30 rounded"></div>
-                            <div className="w-3/4 h-3 bg-white/30 rounded"></div>
-                            <div className="w-full h-10 bg-white/40 rounded-lg"></div>
+                      <div className="w-48 h-48 sm:w-56 sm:h-56 md:w-64 md:h-64 bg-gradient-to-br from-[#7F543D] via-[#335765] to-[#74A8A4] rounded-3xl flex items-center justify-center shadow-2xl transform rotate-6 hover:rotate-0 transition-transform duration-500">
+                        <div className="w-40 h-40 sm:w-48 sm:h-48 md:w-56 md:h-56 bg-white/20 backdrop-blur-sm rounded-2xl sm:rounded-3xl flex items-center justify-center p-3 sm:p-4 md:p-6">
+                          <div className="space-y-3 sm:space-y-4 w-full">
+                            <div className="w-full h-4 sm:h-5 md:h-6 bg-white/30 rounded"></div>
+                            <div className="w-3/4 h-3 sm:h-4 md:h-5 bg-white/30 rounded"></div>
+                            <div className="w-full h-10 sm:h-12 md:h-14 bg-white/40 rounded-lg"></div>
                           </div>
                         </div>
                       </div>
                     </div>
-                    {/* Submit Button Particle */}
-                    <div className="webform-submit absolute bottom-10 right-16 w-16 h-10 bg-gradient-to-r from-[#335765] to-[#74A8A4] rounded-lg shadow-lg flex items-center justify-center animate-bounce-slow">
-                      <Send className="w-5 h-5 text-white" />
+                    {/* Submit Button Particle - Responsive */}
+                    <div className="webform-submit absolute bottom-8 right-10 sm:bottom-10 sm:right-16 w-14 h-10 sm:w-16 sm:h-12 md:w-20 md:h-14 bg-gradient-to-r from-[#335765] to-[#74A8A4] rounded-lg sm:rounded-xl shadow-lg flex items-center justify-center animate-bounce-slow">
+                      <Send className="w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7 text-white" />
                     </div>
-                    {/* Success Particles */}
-                    <div className="webform-success-1 absolute top-5 right-1/4 w-3 h-3 bg-[#74A8A4] rounded-full animate-ping"></div>
-                    <div className="webform-success-2 absolute bottom-1/3 left-10 w-2 h-2 bg-[#B6D9E0] rounded-full animate-ping delay-300"></div>
-                    <div className="webform-success-3 absolute top-1/3 right-10 w-2.5 h-2.5 bg-[#7F543D] rounded-full animate-ping delay-500"></div>
+                    {/* Success Particles - Responsive */}
+                    <div className="webform-success-1 absolute top-4 right-1/4 w-2.5 h-2.5 sm:w-3 md:w-4 md:h-4 bg-[#74A8A4] rounded-full animate-ping"></div>
+                    <div className="webform-success-2 absolute bottom-1/3 left-6 sm:left-10 w-2 h-2 sm:w-2.5 md:w-3 md:h-3 bg-[#B6D9E0] rounded-full animate-ping delay-300"></div>
+                    <div className="webform-success-3 absolute top-1/3 right-6 sm:right-10 w-2.5 h-2.5 sm:w-3 md:w-3.5 md:h-3.5 bg-[#7F543D] rounded-full animate-ping delay-500"></div>
                   </div>
                 </div>
               </div>
