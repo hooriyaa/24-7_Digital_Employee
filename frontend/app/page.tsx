@@ -30,7 +30,8 @@ import {
   Activity,
   Ticket,
   MessageSquare,
-  LayoutDashboard
+  LayoutDashboard,
+  AlertCircle
 } from "lucide-react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -193,6 +194,8 @@ export default function Home() {
     message: "",
   });
 
+  const [whatsappError, setWhatsappError] = useState("");
+
   const [selectedChannel, setSelectedChannel] = useState<"web" | "email" | "whatsapp">("web");
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [showCopied, setShowCopied] = useState(false);
@@ -332,6 +335,17 @@ export default function Home() {
         return;
       }
 
+      // Validate WhatsApp number format (reject email addresses)
+      if (selectedChannel === "whatsapp" && formData.phone) {
+        if (!validateWhatsAppNumber(formData.phone)) {
+          setStatus({
+            type: "error",
+            message: "Please enter a valid phone number (not an email). Example: +92 300 1234567",
+          });
+          return;
+        }
+      }
+
       const response = await fetch("http://localhost:8000/api/v1/tickets", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -379,7 +393,37 @@ export default function Home() {
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    const { name, value } = e.target;
+    
+    // Clear whatsapp error when user starts typing
+    if (name === "phone") {
+      setWhatsappError("");
+    }
+    
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  // Real-time WhatsApp validation on blur
+  const handleWhatsAppBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    const phone = e.target.value;
+    if (selectedChannel === "whatsapp" && phone) {
+      if (!validateWhatsAppNumber(phone)) {
+        setWhatsappError("❌ Email address not accepted. Please enter a phone number. Example: +92 300 1234567");
+      } else {
+        setWhatsappError("");
+      }
+    }
+  };
+
+  // Validate WhatsApp number (reject email addresses)
+  const validateWhatsAppNumber = (phone: string): boolean => {
+    // Check if input contains @ symbol (email pattern)
+    if (phone.includes('@')) {
+      return false;
+    }
+    // Check if input contains only numbers, spaces, plus sign, parentheses, and hyphens
+    const phonePattern = /^[\d\s\+\-\(\)]+$/;
+    return phonePattern.test(phone);
   };
 
   return (
@@ -1237,10 +1281,22 @@ export default function Home() {
                             name="phone"
                             value={formData.phone}
                             onChange={handleChange}
+                            onBlur={handleWhatsAppBlur}
                             placeholder="+92 300 1234567"
+                            type="tel"
+                            pattern="[0-9+\-\s()]*"
+                            title="Please enter a valid phone number (not an email)"
                             required
-                            className="bg-white border-2 border-[#DBE2DC] text-[#335765] placeholder:text-[#9fb5b8] focus:border-[#74A8A4] focus:ring-2 focus:ring-[#74A8A4]/20 rounded-xl"
+                            className={`bg-white border-2 ${
+                              whatsappError ? "border-red-500 focus:border-red-600 focus:ring-2 focus:ring-red-200" : "border-[#DBE2DC] focus:border-[#74A8A4] focus:ring-2 focus:ring-[#74A8A4]/20"
+                            } text-[#335765] placeholder:text-[#9fb5b8] rounded-xl`}
                           />
+                          {whatsappError && (
+                            <div className="flex items-center gap-2 text-red-600 bg-red-50 border border-red-200 rounded-lg p-2 animate-fade-in">
+                              <AlertCircle className="w-4 h-4 flex-shrink-0" />
+                              <p className="text-xs font-medium">{whatsappError}</p>
+                            </div>
+                          )}
                         </div>
                       ) : (
                         <div className="space-y-2">
