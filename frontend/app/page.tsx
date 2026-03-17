@@ -29,7 +29,8 @@ import {
   TrendingUp,
   Activity,
   Ticket,
-  MessageSquare
+  MessageSquare,
+  LayoutDashboard
 } from "lucide-react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -195,6 +196,7 @@ export default function Home() {
   const [selectedChannel, setSelectedChannel] = useState<"web" | "email" | "whatsapp">("web");
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [showCopied, setShowCopied] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const heroRef = useRef<HTMLDivElement>(null);
   const featuresRef = useRef<HTMLDivElement>(null);
@@ -382,20 +384,23 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#F8F9F8] via-[#DBE2DC] to-[#F8F9F8]">
-      {/* Navigation */}
+      {/* Navigation - Responsive with Hamburger Menu */}
       <nav className="border-b border-[#DBE2DC]/50 bg-white/95 backdrop-blur-xl sticky top-0 z-50 shadow-md">
         <div className="container mx-auto px-4 py-3">
           <div className="flex items-center justify-between">
+            {/* Logo */}
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-gradient-to-br from-[#335765] via-[#74A8A4] to-[#B6D9E0] rounded-xl flex items-center justify-center shadow-md">
                 <Sparkles className="w-6 h-6 text-white" />
               </div>
               <div>
                 <h1 className="text-lg font-bold bg-gradient-to-r from-[#335765] to-[#74A8A4] bg-clip-text text-transparent">Customer Success FTE</h1>
-                <p className="text-xs text-[#556b7a] font-medium">24/7 AI-Powered Support</p>
+                <p className="text-xs text-[#556b7a] font-medium hidden sm:block">24/7 AI-Powered Support</p>
               </div>
             </div>
-            <div className="flex items-center gap-6">
+
+            {/* Desktop Navigation */}
+            <div className="hidden lg:flex items-center gap-6">
               <a href="#features" className="text-sm font-medium text-[#335765] relative group overflow-hidden">
                 Features
                 <span className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-[#335765] to-[#74A8A4] transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300 ease-out"></span>
@@ -437,7 +442,100 @@ export default function Home() {
                 <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
             </div>
+
+            {/* Mobile Menu Button (Hamburger) */}
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="lg:hidden p-2 rounded-lg hover:bg-[#DBE2DC]/50 transition-all duration-300"
+              aria-label="Toggle menu"
+            >
+              {mobileMenuOpen ? (
+                /* Close Icon */
+                <svg className="w-6 h-6 text-[#335765]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              ) : (
+                /* Hamburger Icon */
+                <svg className="w-6 h-6 text-[#335765]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+              )}
+            </button>
           </div>
+
+          {/* Mobile Menu - Dropdown with Animations */}
+          {mobileMenuOpen && (
+            <div className="lg:hidden mt-4 pb-4 border-t border-[#DBE2DC]/50 pt-4 animate-fade-in">
+              <div className="flex flex-col gap-2">
+                <a
+                  href="#features"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="nav-link-mobile flex items-center gap-3 px-4 py-3 text-[#335765] hover:text-white hover:bg-gradient-to-r hover:from-[#335765] hover:to-[#74A8A4] rounded-lg transition-all duration-300 group"
+                >
+                  <Brain className="w-5 h-5 group-hover:scale-110 transition-transform duration-300" />
+                  <span className="font-medium">Features</span>
+                </a>
+                <a
+                  href="#channels"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="nav-link-mobile flex items-center gap-3 px-4 py-3 text-[#335765] hover:text-white hover:bg-gradient-to-r hover:from-[#335765] hover:to-[#74A8A4] rounded-lg transition-all duration-300 group"
+                >
+                  <Layers className="w-5 h-5 group-hover:scale-110 transition-transform duration-300" />
+                  <span className="font-medium">Channels</span>
+                </a>
+                <a
+                  href="#testimonials"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="nav-link-mobile flex items-center gap-3 px-4 py-3 text-[#335765] hover:text-white hover:bg-gradient-to-r hover:from-[#335765] hover:to-[#74A8A4] rounded-lg transition-all duration-300 group"
+                >
+                  <Star className="w-5 h-5 group-hover:scale-110 transition-transform duration-300" />
+                  <span className="font-medium">Testimonials</span>
+                </a>
+                <a
+                  href="/dashboard"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="nav-link-mobile flex items-center gap-3 px-4 py-3 text-[#335765] hover:text-white hover:bg-gradient-to-r hover:from-[#335765] hover:to-[#74A8A4] rounded-lg transition-all duration-300 group"
+                >
+                  <LayoutDashboard className="w-5 h-5 group-hover:scale-110 transition-transform duration-300" />
+                  <span className="font-medium">Dashboard</span>
+                </a>
+                <a
+                  href="/check-status"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="nav-link-mobile flex items-center gap-3 px-4 py-3 text-[#335765] hover:text-white hover:bg-gradient-to-r hover:from-[#335765] hover:to-[#74A8A4] rounded-lg transition-all duration-300 group"
+                >
+                  <Activity className="w-5 h-5 group-hover:scale-110 transition-transform duration-300" />
+                  <span className="font-medium">Check Status</span>
+                </a>
+                <div className="flex flex-col gap-2 mt-2 pt-2 border-t border-[#DBE2DC]/50">
+                  <Button
+                    onClick={() => {
+                      const ticketId = prompt("Enter your Tracking ID:");
+                      if (ticketId) {
+                        window.location.href = `/track/${ticketId}`;
+                      }
+                      setMobileMenuOpen(false);
+                    }}
+                    variant="outline"
+                    className="w-full border-2 border-[#335765] text-[#335765] hover:bg-[#335765] hover:text-white transition-all cursor-pointer justify-center py-6"
+                  >
+                    <Ticket className="w-4 h-4 mr-2" />
+                    Track Ticket
+                  </Button>
+                  <Button
+                    onClick={() => {
+                      document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
+                      setMobileMenuOpen(false);
+                    }}
+                    className="w-full bg-gradient-to-r from-[#335765] to-[#74A8A4] hover:from-[#2a4752] hover:to-[#5d8f8b] text-white shadow-md hover:shadow-lg transition-all cursor-pointer justify-center py-6"
+                  >
+                    Get Started
+                    <ArrowRight className="w-4 h-4 ml-2" />
+                  </Button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </nav>
 
