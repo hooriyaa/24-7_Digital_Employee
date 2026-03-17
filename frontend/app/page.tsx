@@ -973,6 +973,7 @@ export default function Home() {
         <div className="absolute top-20 left-10 w-64 h-64 bg-[#B6D9E0]/20 rounded-full blur-3xl"></div>
         <div className="absolute bottom-20 right-10 w-80 h-80 bg-[#74A8A4]/15 rounded-full blur-3xl"></div>
 
+
         <div className="container mx-auto max-w-7xl relative z-10">
           <div className="text-center mb-16">
             <Badge className="testimonial-badge mb-4 bg-[#B6D9E0]/30 text-[#335765] border-[#335765]/30 font-medium inline-flex items-center gap-2 px-6 py-2">
