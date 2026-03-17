@@ -278,6 +278,36 @@
   .dashboard-table-mobile {
     @apply overflow-x-auto;
   }
+
+  /* Sidebar slide animation */
+  .sidebar-mobile {
+    transform: translateX(-100%);
+    transition: transform 0.3s ease-in-out;
+  }
+
+  .sidebar-mobile.open {
+    transform: translateX(0);
+  }
+
+  /* Mobile header spacing */
+  .mobile-header {
+    @apply p-4;
+  }
+
+  /* Card padding on mobile */
+  .card-mobile {
+    @apply p-4;
+  }
+
+  /* Stats grid on mobile */
+  .stats-grid-mobile {
+    @apply grid-cols-2 gap-4;
+  }
+
+  /* Ticket status cards on mobile */
+  .ticket-status-mobile {
+    @apply grid-cols-2 gap-3;
+  }
 }
 
 /* Track Page Specific */
@@ -288,6 +318,60 @@
 
   .track-icon-mobile {
     @apply w-12 h-12;
+  }
+}
+
+/* Tickets Page Specific */
+@media (max-width: 768px) {
+  /* Ticket card layout on mobile */
+  .ticket-card-mobile {
+    @apply flex-col gap-3;
+  }
+
+  .ticket-card-actions-mobile {
+    @apply flex-row w-full justify-between;
+  }
+
+  /* Badge wrapping on mobile */
+  .ticket-badges-mobile {
+    @apply flex-wrap gap-1;
+  }
+
+  /* Scrollable ticket list on mobile */
+  .ticket-list-mobile {
+    @apply h-[400px] sm:h-[500px];
+  }
+
+  /* Compact ticket header on mobile */
+  .ticket-header-mobile {
+    @apply text-lg;
+  }
+}
+
+/* Customers Page Specific */
+@media (max-width: 768px) {
+  /* Customer card layout on mobile */
+  .customer-card-mobile {
+    @apply flex-col gap-3;
+  }
+
+  .customer-info-mobile {
+    @apply flex-col gap-2;
+  }
+
+  /* Avatar size on mobile */
+  .customer-avatar-mobile {
+    @apply w-10 h-10;
+  }
+
+  /* Scrollable customer list on mobile */
+  .customer-list-mobile {
+    @apply h-[400px] sm:h-[500px];
+  }
+
+  /* Email truncation on mobile */
+  .customer-email-mobile {
+    @apply max-w-[200px] truncate;
   }
 }
 
@@ -337,6 +421,22 @@
 
 .animate-fade-in {
   animation: fade-in 0.3s ease-out forwards;
+}
+
+/* Scale In Animation for Modals */
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-scale-in {
+  animation: scale-in 0.3s ease-out forwards;
 }
 
 /* Mobile Menu Link Hover Effects */

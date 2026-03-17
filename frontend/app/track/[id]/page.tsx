@@ -227,10 +227,10 @@ export default function TrackPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-[#F8F9F8] via-[#DBE2DC] to-[#F8F9F8] flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-b from-[#F8F9F8] via-[#DBE2DC] to-[#F8F9F8] flex items-center justify-center p-4">
         <div className="text-center">
           {/* Beautiful 3D Loading Animation */}
-          <div className="relative w-20 h-20 mx-auto mb-6">
+          <div className="relative w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-4 sm:mb-6">
             {/* Outer Ring */}
             <div className="absolute inset-0 rounded-full border-4 border-[#74A8A4]/20 border-t-[#74A8A4] animate-spin"></div>
             {/* Middle Ring */}
@@ -240,7 +240,7 @@ export default function TrackPage() {
             {/* Center Glow */}
             <div className="absolute inset-0 rounded-full bg-gradient-to-br from-[#74A8A4] to-[#B6D9E0] opacity-20 blur-md animate-pulse"></div>
           </div>
-          <p className="text-[#335765] font-semibold text-lg">Loading ticket...</p>
+          <p className="text-[#335765] font-semibold text-sm sm:text-lg">Loading ticket...</p>
         </div>
       </div>
     );
@@ -249,51 +249,51 @@ export default function TrackPage() {
   if (error || !ticketData) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-[#F8F9F8] via-[#DBE2DC] to-[#F8F9F8] flex items-center justify-center p-4">
-        <Card className="max-w-lg w-full p-10 bg-white/95 backdrop-blur-xl border-2 border-[#DBE2DC] shadow-2xl text-center animate-scale-in">
+        <Card className="max-w-md sm:max-w-lg w-full p-6 sm:p-8 md:p-10 bg-white/95 backdrop-blur-xl border-2 border-[#DBE2DC] shadow-2xl text-center animate-scale-in">
           {/* Animated Error Icon */}
-          <div className="relative mb-6">
+          <div className="relative mb-4 sm:mb-6">
             {/* Outer Glow */}
             <div className="absolute inset-0 rounded-full bg-[#E74C3C] opacity-20 blur-xl animate-pulse"></div>
             {/* Main Icon Container */}
-            <div className="relative w-24 h-24 mx-auto bg-gradient-to-br from-[#E74C3C] via-[#E74C3C]/80 to-[#E74C3C]/60 rounded-full flex items-center justify-center shadow-lg transform hover:scale-110 transition-transform duration-300">
-              <AlertCircle className="w-12 h-12 text-white" />
+            <div className="relative w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 mx-auto bg-gradient-to-br from-[#E74C3C] via-[#E74C3C]/80 to-[#E74C3C]/60 rounded-full flex items-center justify-center shadow-lg transform hover:scale-110 transition-transform duration-300">
+              <AlertCircle className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 text-white" />
             </div>
             {/* Orbiting Dot */}
             <div className="absolute inset-0 animate-spin" style={{ animationDuration: '3s' }}>
-              <div className="absolute top-0 left-1/2 w-3 h-3 bg-[#E74C3C] rounded-full transform -translate-x-1/2 -translate-y-1 shadow-lg"></div>
+              <div className="absolute top-0 left-1/2 w-2 h-2 sm:w-3 sm:h-3 bg-[#E74C3C] rounded-full transform -translate-x-1/2 -translate-y-1 shadow-lg"></div>
             </div>
           </div>
-          
+
           {/* Title */}
-          <h2 className="text-3xl font-bold bg-gradient-to-r from-[#E74C3C] to-[#E74C3C]/60 bg-clip-text text-transparent mb-3">
+          <h2 className="text-xl sm:text-2xl md:text-3xl font-bold bg-gradient-to-r from-[#E74C3C] to-[#E74C3C]/60 bg-clip-text text-transparent mb-2 sm:mb-3">
             Ticket Not Found
           </h2>
-          
+
           {/* Description */}
-          <p className="text-[#556b7a] text-lg mb-8 leading-relaxed">
+          <p className="text-[#556b7a] text-sm sm:text-base md:text-lg mb-6 sm:mb-8 leading-relaxed">
             {error || "We couldn't find a ticket with that ID. Please check the tracking ID and try again."}
           </p>
-          
+
           {/* Action Buttons */}
-          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+          <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 justify-center">
             <Button
               onClick={() => router.push("/")}
-              className="bg-gradient-to-r from-[#335765] to-[#74A8A4] text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 px-8 py-6 text-base font-semibold"
+              className="bg-gradient-to-r from-[#335765] to-[#74A8A4] text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 px-4 sm:px-6 md:px-8 py-4 sm:py-5 md:py-6 text-sm sm:text-base font-semibold"
             >
               Go to Home
             </Button>
             <Button
               onClick={() => router.push("/check-status")}
               variant="outline"
-              className="border-2 border-[#335765] text-[#335765] hover:bg-[#335765] hover:text-white transition-all duration-300 hover:-translate-y-1 px-8 py-6 text-base font-semibold"
+              className="border-2 border-[#335765] text-[#335765] hover:bg-[#335765] hover:text-white transition-all duration-300 hover:-translate-y-1 px-4 sm:px-6 md:px-8 py-4 sm:py-5 md:py-6 text-sm sm:text-base font-semibold"
             >
               Check Another Ticket
             </Button>
           </div>
-          
+
           {/* Help Text */}
-          <div className="mt-8 pt-6 border-t border-[#DBE2DC]">
-            <p className="text-sm text-[#74A8A4] font-medium">
+          <div className="mt-4 sm:mt-6 pt-4 sm:pt-6 border-t border-[#DBE2DC]">
+            <p className="text-xs sm:text-sm text-[#74A8A4] font-medium">
               Need help?{" "}
               <a href="/contact" className="text-[#335765] hover:text-[#74A8A4] underline font-semibold">
                 Contact Support
@@ -309,41 +309,42 @@ export default function TrackPage() {
     <div className="min-h-screen bg-gradient-to-b from-[#F8F9F8] via-[#DBE2DC] to-[#F8F9F8]">
       {/* Navigation */}
       <nav className="border-b border-[#DBE2DC]/50 bg-white/95 backdrop-blur-xl sticky top-0 z-50 shadow-md">
-        <div className="container mx-auto px-4 py-3">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
+        <div className="container mx-auto px-3 md:px-4 py-2 md:py-3">
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2 flex-1 min-w-0">
               <Button
                 onClick={() => router.push("/check-status?ticket=" + ticketId)}
                 variant="outline"
-                className="border-2 border-[#335765] text-[#335765] hover:bg-[#335765] hover:text-white transition-all cursor-pointer"
+                className="border-2 border-[#335765] text-[#335765] hover:bg-[#335765] hover:text-white transition-all cursor-pointer flex-shrink-0 h-9 md:h-10 px-2 md:px-3"
                 disabled={refreshing}
               >
                 {refreshing ? (
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  <Loader2 className="w-3 h-3 md:w-4 md:h-4 animate-spin" />
                 ) : (
-                  <ArrowLeft className="w-4 h-4 mr-2" />
+                  <ArrowLeft className="w-3 h-3 md:w-4 md:h-4" />
                 )}
-                Back
+                <span className="hidden sm:inline ml-1 md:ml-2 text-xs md:text-sm">Back</span>
               </Button>
-              <div className="w-10 h-10 bg-gradient-to-br from-[#335765] via-[#74A8A4] to-[#B6D9E0] rounded-xl flex items-center justify-center shadow-md">
-                <MessageSquare className="w-6 h-6 text-white" />
+              <div className="w-8 h-8 md:w-10 md:h-10 bg-gradient-to-br from-[#335765] via-[#74A8A4] to-[#B6D9E0] rounded-lg md:rounded-xl flex items-center justify-center shadow-md flex-shrink-0">
+                <MessageSquare className="w-4 h-4 md:w-5 md:h-5 md:h-6 text-white" />
               </div>
-              <div>
-                <h1 className="text-lg font-bold bg-gradient-to-r from-[#335765] to-[#74A8A4] bg-clip-text text-transparent">
+              <div className="flex-1 min-w-0">
+                <h1 className="text-sm md:text-lg font-bold bg-gradient-to-r from-[#335765] to-[#74A8A4] bg-clip-text text-transparent truncate">
                   Ticket Conversation
                 </h1>
-                <p className="text-xs text-[#556b7a] font-medium">Track & Chat</p>
+                <p className="text-[10px] md:text-xs text-[#556b7a] font-medium hidden sm:block">Track & Chat</p>
               </div>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1 md:gap-2 flex-shrink-0">
               {refreshing && (
-                <Badge className="bg-[#74A8A4]/30 text-[#335765] border-[#335765]/30">
-                  <Loader2 className="w-3 h-3 mr-2 animate-spin" />
-                  Updating...
+                <Badge className="bg-[#74A8A4]/30 text-[#335765] border-[#335765]/30 hidden sm:flex">
+                  <Loader2 className="w-3 h-3 mr-1 md:mr-2 animate-spin" />
+                  <span className="text-xs">Updating...</span>
                 </Badge>
               )}
-              <Badge className={`${getStatusColor(ticketData.status)} border px-4 py-2 rounded-full font-semibold`}>
-                {ticketData.status.replace("_", " ")}
+              <Badge className={`${getStatusColor(ticketData.status)} border px-2 md:px-3 py-1 rounded-full font-semibold text-xs md:text-sm`}>
+                <span className="hidden xs:inline">{ticketData.status.replace("_", " ")}</span>
+                <span className="xs:hidden">{ticketData.status}</span>
               </Badge>
             </div>
           </div>
@@ -351,32 +352,32 @@ export default function TrackPage() {
       </nav>
 
       {/* Main content */}
-      <div className="container mx-auto px-4 py-8 max-w-4xl">
+      <div className="container mx-auto px-3 md:px-4 py-4 md:py-8 max-w-4xl">
         {/* Header */}
-        <Card className="track-header mb-6 bg-white/90 backdrop-blur-xl border-2 border-[#DBE2DC] shadow-2xl">
-          <div className="p-6">
-            <div className="flex items-start justify-between mb-4">
-              <div>
-                <h2 className="text-2xl font-bold text-[#335765] mb-2">
+        <Card className="track-header mb-4 md:mb-6 bg-white/90 backdrop-blur-xl border-2 border-[#DBE2DC] shadow-2xl">
+          <div className="p-4 md:p-6">
+            <div className="flex flex-col sm:flex-row items-start justify-between gap-3 mb-3 md:mb-4">
+              <div className="flex-1 min-w-0">
+                <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-[#335765] mb-1 md:mb-2 truncate">
                   {ticketData.subject}
                 </h2>
-                <p className="text-[#556b7a] text-sm">
+                <p className="text-xs sm:text-sm text-[#556b7a] break-all">
                   Ticket ID: <span className="font-mono text-[#74A8A4] font-bold">{ticketId}</span>
                 </p>
               </div>
-              <div className="flex items-center gap-2">
-                <Badge className={`${getStatusColor(ticketData.priority)} border px-3 py-1 rounded-full font-semibold`}>
+              <div className="flex items-center gap-2 flex-shrink-0">
+                <Badge className={`${getStatusColor(ticketData.priority)} border px-2 md:px-3 py-1 rounded-full font-semibold text-xs md:text-sm`}>
                   {ticketData.priority}
                 </Badge>
               </div>
             </div>
-            <div className="flex items-center gap-4 text-sm text-[#556b7a]">
-              <div className="flex items-center gap-2">
-                <Clock className="w-4 h-4 text-[#74A8A4]" />
-                <span>Created: {new Date(ticketData.created_at).toLocaleDateString()}</span>
+            <div className="flex flex-wrap items-center gap-2 md:gap-4 text-xs sm:text-sm text-[#556b7a]">
+              <div className="flex items-center gap-1 md:gap-2">
+                <Clock className="w-3 h-3 md:w-4 md:h-4 text-[#74A8A4]" />
+                <span className="truncate">Created: {new Date(ticketData.created_at).toLocaleDateString()}</span>
               </div>
-              <div className="flex items-center gap-2">
-                <MessageSquare className="w-4 h-4 text-[#74A8A4]" />
+              <div className="flex items-center gap-1 md:gap-2">
+                <MessageSquare className="w-3 h-3 md:w-4 md:h-4 text-[#74A8A4]" />
                 <span>{ticketData.message_count} messages</span>
               </div>
             </div>
@@ -384,44 +385,44 @@ export default function TrackPage() {
         </Card>
 
         {/* Messages */}
-        <Card className="messages-container mb-6 bg-white/90 backdrop-blur-xl border-2 border-[#DBE2DC] shadow-2xl">
-          <div className="p-6">
-            <div className="space-y-4 max-h-[500px] overflow-y-auto">
+        <Card className="messages-container mb-4 md:mb-6 bg-white/90 backdrop-blur-xl border-2 border-[#DBE2DC] shadow-2xl">
+          <div className="p-3 md:p-6">
+            <div className="space-y-3 md:space-y-4 max-h-[400px] sm:max-h-[500px] overflow-y-auto">
               {ticketData.messages.map((msg, index) => (
                 <div
                   key={msg.id}
-                  className={`flex gap-3 ${
+                  className={`flex gap-2 md:gap-3 ${
                     msg.sender_type === "customer" ? "flex-row-reverse" : ""
                   }`}
                 >
                   <div
-                    className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${
+                    className={`w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center flex-shrink-0 ${
                       msg.sender_type === "customer"
                         ? "bg-gradient-to-br from-[#74A8A4] to-[#335765]"
                         : "bg-gradient-to-br from-[#335765] to-[#74A8A4]"
                     }`}
                   >
                     {msg.sender_type === "customer" ? (
-                      <User className="w-5 h-5 text-white" />
+                      <User className="w-4 h-4 md:w-5 md:h-5 text-white" />
                     ) : (
-                      <Bot className="w-5 h-5 text-white" />
+                      <Bot className="w-4 h-4 md:w-5 md:h-5 text-white" />
                     )}
                   </div>
                   <div
-                    className={`max-w-[70%] ${
+                    className={`max-w-[75%] sm:max-w-[70%] ${
                       msg.sender_type === "customer" ? "text-right" : "text-left"
                     }`}
                   >
                     <div
-                      className={`p-4 rounded-2xl ${
+                      className={`p-2 md:p-4 rounded-xl md:rounded-2xl ${
                         msg.sender_type === "customer"
                           ? "bg-gradient-to-br from-[#74A8A4] to-[#335765] text-white"
                           : "bg-gradient-to-br from-[#B6D9E0] to-[#DBE2DC] text-[#335765]"
                       }`}
                     >
-                      <p className="text-sm leading-relaxed">{msg.content}</p>
+                      <p className="text-xs sm:text-sm leading-relaxed break-words">{msg.content}</p>
                     </div>
-                    <p className="text-xs text-[#556b7a] mt-1">
+                    <p className="text-[10px] sm:text-xs text-[#556b7a] mt-1">
                       {new Date(msg.created_at).toLocaleTimeString([], {
                         hour: "2-digit",
                         minute: "2-digit",
@@ -437,32 +438,32 @@ export default function TrackPage() {
 
         {/* Message Input */}
         <Card className="message-input bg-white/90 backdrop-blur-xl border-2 border-[#DBE2DC] shadow-2xl">
-          <div className="p-4">
-            <form onSubmit={handleSendMessage} className="flex gap-3">
+          <div className="p-3 md:p-4">
+            <form onSubmit={handleSendMessage} className="flex gap-2 md:gap-3">
               <Input
                 value={newMessage}
                 onChange={(e) => setNewMessage(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && handleSendMessage()}
                 placeholder="Type your message..."
-                className="flex-1 bg-white border-2 border-[#DBE2DC] text-[#335765] placeholder:text-[#9fb5b8] focus:border-[#74A8A4] focus:ring-2 focus:ring-[#74A8A4]/20 h-12 rounded-xl"
+                className="flex-1 bg-white border-2 border-[#DBE2DC] text-[#335765] placeholder:text-[#9fb5b8] focus:border-[#74A8A4] focus:ring-2 focus:ring-[#74A8A4]/20 h-10 md:h-12 rounded-xl text-sm md:text-base"
                 disabled={sending}
               />
               <Button
                 type="submit"
                 disabled={sending || !newMessage.trim()}
-                className="bg-gradient-to-r from-[#335765] via-[#74A8A4] to-[#7F543D] hover:from-[#2a4752] hover:via-[#5d8f8b] hover:to-[#6b4632] text-white font-bold shadow-lg hover:shadow-xl transition-all h-12 px-6 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                className="bg-gradient-to-r from-[#335765] via-[#74A8A4] to-[#7F543D] hover:from-[#2a4752] hover:via-[#5d8f8b] hover:to-[#6b4632] text-white font-bold shadow-lg hover:shadow-xl transition-all h-10 md:h-12 px-3 md:px-6 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer flex-shrink-0"
               >
                 {sending ? (
-                  <Loader2 className="w-5 h-5 animate-spin" />
+                  <Loader2 className="w-4 h-4 md:w-5 md:h-5 animate-spin" />
                 ) : (
                   <>
-                    <Send className="w-5 h-5 mr-2" />
-                    Send
+                    <Send className="w-4 h-4 md:w-5 md:h-5 mr-1 md:mr-2" />
+                    <span className="hidden sm:inline">Send</span>
                   </>
                 )}
               </Button>
             </form>
-            <p className="text-xs text-[#556b7a] mt-2 text-center">
+            <p className="text-[10px] sm:text-xs text-[#556b7a] mt-2 text-center">
               Our AI assistant typically responds within 5 minutes
             </p>
           </div>

@@ -10,7 +10,8 @@ import {
   BookOpen,
   Users,
   Sparkles,
-  ArrowLeft
+  ArrowLeft,
+  X
 } from "lucide-react";
 
 interface NavItem {
@@ -46,13 +47,32 @@ const navItems: NavItem[] = [
 
 interface SidebarProps {
   className?: string;
+  onClose?: () => void;
 }
 
-export function Sidebar({ className }: SidebarProps) {
+export function Sidebar({ className, onClose }: SidebarProps) {
   return (
     <div className={cn("flex h-full flex-col border-r border-[#DBE2DC] bg-gradient-to-b from-[#335765] to-[#2a4752]", className)}>
-      {/* Back Button */}
-      <div className="p-4 border-b border-[#74A8A4]/30">
+      {/* Mobile Close Button */}
+      <div className="lg:hidden flex items-center justify-between p-4 border-b border-[#74A8A4]/30">
+        <div className="flex items-center gap-2">
+          <div className="w-8 h-8 bg-gradient-to-br from-[#74A8A4] to-[#B6D9E0] rounded-lg flex items-center justify-center">
+            <Sparkles className="w-4 h-4 text-white" />
+          </div>
+          <span className="text-white font-semibold">Menu</span>
+        </div>
+        <Button
+          onClick={onClose}
+          variant="ghost"
+          size="sm"
+          className="text-white hover:bg-[#74A8A4]/20"
+        >
+          <X className="w-5 h-5" />
+        </Button>
+      </div>
+
+      {/* Back Button - Desktop Only */}
+      <div className="hidden lg:block p-4 border-b border-[#74A8A4]/30">
         <Button
           onClick={() => window.location.href = '/'}
           variant="ghost"
@@ -64,7 +84,7 @@ export function Sidebar({ className }: SidebarProps) {
       </div>
 
       {/* Logo */}
-      <div className="flex h-16 items-center border-b border-[#74A8A4]/30 px-6">
+      <div className="hidden lg:flex h-16 items-center border-b border-[#74A8A4]/30 px-6">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 bg-gradient-to-br from-[#74A8A4] to-[#B6D9E0] rounded-xl flex items-center justify-center shadow-lg">
             <Sparkles className="w-5 h-5 text-white" />

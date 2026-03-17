@@ -3,11 +3,11 @@
 import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Input } from "@/components/ui/input";
 import { ticketsApi } from "@/lib/api";
 import type { Ticket } from "@/lib/api";
-import { RefreshCw, Trash2, Ticket as TicketIcon } from "lucide-react";
+import { Trash2, Ticket as TicketIcon, Search } from "lucide-react";
 
 const statusColors: Record<string, string> = {
   open: "bg-blue-50 text-blue-700 border-blue-200",
@@ -68,6 +68,7 @@ export function TicketsTable() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const fetchTickets = async () => {
     try {
@@ -85,7 +86,7 @@ export function TicketsTable() {
 
   const handleDelete = async (e: React.MouseEvent, ticketId: string) => {
     e.stopPropagation(); // Prevent ticket selection
-    
+
     if (!confirm("Are you sure you want to delete this ticket? This will also delete all messages.")) {
       return;
     }
@@ -116,26 +117,53 @@ export function TicketsTable() {
     });
   };
 
+  // Filter tickets based on search query
+  const filteredTickets = tickets.filter((ticket) => {
+    const query = searchQuery.toLowerCase();
+    return (
+      ticket.subject?.toLowerCase().includes(query) ||
+      ticket.latest_message?.toLowerCase().includes(query) ||
+      ticket.status.toLowerCase().includes(query) ||
+      ticket.priority.toLowerCase().includes(query) ||
+      ticket.id.toLowerCase().includes(query)
+    );
+  });
+
   return (
     <div className="space-y-4">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-2xl font-bold text-[#335765]">All Tickets</h2>
-          <p className="text-sm text-[#556b7a]">
-            {tickets.length} tickets from database
-          </p>
+      <div className="space-y-3">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-xl sm:text-2xl font-bold text-[#335765]">All Tickets</h2>
+            <p className="text-xs sm:text-sm text-[#556b7a]">
+              {filteredTickets.length} of {tickets.length} tickets
+            </p>
+          </div>
         </div>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={fetchTickets}
-          disabled={loading}
-          className="gap-2 border-2 border-[#335765] text-[#335765] hover:bg-[#335765] hover:text-white transition-all"
-        >
-          <RefreshCw className={`h-4 w-4 ${loading ? "animate-spin" : ""}`} />
-          Refresh Data
-        </Button>
+
+        {/* Search Bar */}
+        <div className="relative">
+          <div className="absolute left-3 top-1/2 -translate-y-1/2 z-10">
+            <Search className="h-4 w-4 text-[#74A8A4]" strokeWidth={2.5} />
+          </div>
+          <Input
+            type="text"
+            placeholder="Search tickets by subject, status, priority, or ID..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="pl-10 pr-10 border-2 border-[#DBE2DC] focus:border-[#74A8A4] bg-white/80 backdrop-blur-xl"
+          />
+          {searchQuery && (
+            <button
+              onClick={() => setSearchQuery("")}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-[#74A8A4] hover:text-[#335765] text-2xl font-bold leading-none cursor-pointer z-10"
+              type="button"
+            >
+              ×
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Error State */}
@@ -159,9 +187,9 @@ export function TicketsTable() {
 
       {/* Tickets List */}
       {!loading && !error && (
-        <ScrollArea className="h-[600px]">
+        <ScrollArea className="h-[500px] sm:h-[600px] cursor-default">
           <div className="space-y-2">
-            {tickets.map((ticket) => {
+            {filteredTickets.map((ticket) => {
               const sentimentEmoji = getSentimentEmoji(ticket.sentiment_score);
               const sentimentInfo = getSentimentInfo(ticket.sentiment_score);
 
@@ -176,46 +204,46 @@ export function TicketsTable() {
                 <Card
                   key={ticket.id}
                   onClick={handleTicketSelect}
-                  className="p-5 hover:bg-gradient-to-r hover:from-[#F8F9F8] hover:to-[#DBE2DC]/50 transition-all cursor-pointer border-2 border-[#DBE2DC] bg-white/80 backdrop-blur-xl shadow-md hover:shadow-xl floating-card"
+                  className="p-3 sm:p-4 md:p-5 hover:bg-gradient-to-r hover:from-[#F8F9F8] hover:to-[#DBE2DC]/50 transition-all cursor-pointer border-2 border-[#DBE2DC] bg-white/80 backdrop-blur-xl shadow-md hover:shadow-xl floating-card"
                 >
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-2">
+                  <div className="flex flex-col sm:flex-row items-start gap-3 sm:gap-4">
+                    <div className="flex-1 min-w-0 w-full cursor-pointer">
+                      <div className="flex flex-wrap items-center gap-2 mb-2">
                         <Badge
                           variant="outline"
-                          className={statusColors[ticket.status] || statusColors.open}
+                          className={`${statusColors[ticket.status] || statusColors.open} text-xs cursor-pointer`}
                         >
                           {ticket.status.replace("_", " ")}
                         </Badge>
                         <Badge
                           variant="secondary"
-                          className={priorityColors[ticket.priority] || priorityColors.normal}
+                          className={`${priorityColors[ticket.priority] || priorityColors.normal} text-xs cursor-pointer`}
                         >
                           {ticket.priority}
                         </Badge>
                         {/* Sentiment Indicator Emoji */}
                         <span
-                          className="text-lg"
+                          className="text-lg cursor-pointer"
                           title={`${sentimentInfo.label} (${ticket.sentiment_score?.toFixed(2) ?? 'N/A'})`}
                         >
                           {sentimentEmoji}
                         </span>
                       </div>
                       {/* Show subject or message preview */}
-                      <h3 className="font-semibold text-[#335765] truncate">
+                      <h3 className="font-semibold text-[#335765] truncate text-sm sm:text-base cursor-pointer">
                         {ticket.subject || ticket.latest_message || "No content"}
                       </h3>
-                      <p className="text-sm text-[#74A8A4] mt-1">
+                      <p className="text-xs sm:text-sm text-[#74A8A4] mt-1 cursor-pointer">
                         Created: {formatDate(ticket.created_at)}
                       </p>
                     </div>
-                    <div className="text-right flex flex-col items-end gap-2">
+                    <div className="text-right flex flex-row sm:flex-col items-center sm:items-end gap-2 w-full sm:w-auto justify-between sm:justify-center cursor-pointer">
                       <Button
                         variant="ghost"
                         size="sm"
                         onClick={(e) => handleDelete(e, ticket.id)}
                         disabled={deletingId === ticket.id}
-                        className="text-red-600 hover:text-red-700 hover:bg-red-50 transition-all"
+                        className="text-red-600 hover:text-red-700 hover:bg-red-50 transition-all cursor-pointer"
                       >
                         {deletingId === ticket.id ? (
                           <RefreshCw className="h-4 w-4 animate-spin" />
@@ -223,30 +251,42 @@ export function TicketsTable() {
                           <Trash2 className="h-4 w-4" />
                         )}
                       </Button>
-                      <p className="text-xs text-[#74A8A4]">
-                        ID: {ticket.id.slice(0, 8)}...
-                      </p>
-                      {ticket.sentiment_score !== null && (
-                        <p className={`text-xs font-medium ${sentimentInfo.color}`}>
-                          {sentimentInfo.label} ({ticket.sentiment_score.toFixed(2)})
+                      <div className="text-xs text-[#74A8A4] text-center sm:text-right cursor-pointer">
+                        <p className="truncate max-w-[120px] sm:max-w-none">
+                          ID: {ticket.id.slice(0, 8)}...
                         </p>
-                      )}
+                        {ticket.sentiment_score !== null && (
+                          <p className={`text-xs font-medium ${sentimentInfo.color}`}>
+                            {sentimentInfo.label} ({ticket.sentiment_score.toFixed(2)})
+                          </p>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </Card>
               );
             })}
-            {tickets.length === 0 && (
-              <Card className="p-12 text-center border-2 border-[#DBE2DC] bg-white/80 backdrop-blur-xl shadow-md">
-                <div className="w-20 h-20 bg-gradient-to-br from-[#335765] to-[#74A8A4] rounded-full flex items-center justify-center mx-auto mb-4">
-                  <TicketIcon className="w-10 h-10 text-white" />
+            {filteredTickets.length === 0 && tickets.length > 0 ? (
+              <Card className="p-8 sm:p-12 text-center border-2 border-[#DBE2DC] bg-white/80 backdrop-blur-xl shadow-md">
+                <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-[#335765] to-[#74A8A4] rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Search className="w-8 h-8 sm:w-10 sm:h-10 text-white" />
                 </div>
-                <p className="text-lg font-semibold text-[#335765] mb-2">No tickets found</p>
-                <p className="text-[#556b7a]">
+                <p className="text-base sm:text-lg font-semibold text-[#335765] mb-2">No tickets found</p>
+                <p className="text-xs sm:text-sm text-[#556b7a]">
+                  Try a different search term or clear the search box.
+                </p>
+              </Card>
+            ) : filteredTickets.length === 0 ? (
+              <Card className="p-8 sm:p-12 text-center border-2 border-[#DBE2DC] bg-white/80 backdrop-blur-xl shadow-md">
+                <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-[#335765] to-[#74A8A4] rounded-full flex items-center justify-center mx-auto mb-4">
+                  <TicketIcon className="w-8 h-8 sm:w-10 sm:h-10 text-white" />
+                </div>
+                <p className="text-base sm:text-lg font-semibold text-[#335765] mb-2">No tickets found</p>
+                <p className="text-xs sm:text-sm text-[#556b7a]">
                   Run the seed script to populate data.
                 </p>
               </Card>
-            )}
+            ) : null}
           </div>
         </ScrollArea>
       )}
