@@ -46,14 +46,13 @@ async def lifespan(app: FastAPI):
         print("✅ Database engine initialized")
 
         # Start Gmail polling in background
-        # Note: Disabled temporarily due to network issues
-        # if settings.debug:  # Only in development
-        #     print("📧 Starting Gmail polling service...")
-        #     asyncio.create_task(gmail_polling_service.start_polling())
-        #     print("✅ Gmail polling started (checking every 30 seconds)")
+        if settings.debug:  # Only in development
+            print("📧 Starting Gmail polling service...")
+            asyncio.create_task(gmail_polling_service.start_polling())
+            print("✅ Gmail polling started (checking every 30 seconds)")
 
         # Start WhatsApp polling in background
-        # Note: Disabled - using webhook instead (more reliable)
+        # Disabled - using webhook instead (faster & no ngrok needed for polling!)
         # if settings.debug:  # Only in development
         #     print("📱 Starting WhatsApp polling service...")
         #     asyncio.create_task(whatsapp_polling_service.start_polling())

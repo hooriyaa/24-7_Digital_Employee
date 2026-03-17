@@ -52,6 +52,8 @@ class WhatsAppPollingService:
         """
         if not self.enabled:
             logger.warning("WhatsApp polling not enabled (missing credentials)")
+            logger.warning(f"Instance ID: {self.instance_id}")
+            logger.warning(f"Token: {self.token[:10]}...")
             return []
         
         try:
@@ -61,18 +63,40 @@ class WhatsAppPollingService:
                 "limit": limit,
             }
             
-            async with httpx.AsyncClient() as client:
+            logger.info(f"📡 Fetching messages from: {url}")
+            logger.info(f"📡 Params: token={self.token[:10]}..., limit={limit}")
+            logger.info(f"📡 Full URL: {url}?token={self.token[:10]}...&limit={limit}")
+            
+            async with httpx.AsyncClient(timeout=30.0) as client:
                 response = await client.get(url, params=params)
+                
+                logger.info(f"📡 Response status: {response.status_code}")
+                logger.info(f"📡 Response headers: {dict(response.headers)}")
+                logger.info(f"📡 Response body: {response.text[:500]}")
                 
                 if response.status_code == 200:
                     data = response.json()
+                    logger.info(f"📡 Parsed JSON: {data}")
                     messages = data.get("messages", [])
                     logger.info(f"✅ Fetched {len(messages)} messages from UltraMsg")
+                    
+                    # Log message details
+                    for i, msg in enumerate(messages):
+                        logger.info(f"📨 Message {i+1}: from={msg.get('from')}, body={msg.get('body', '')[:50]}")
+                    
                     return messages
                 else:
                     logger.error(f"❌ UltraMsg API error: {response.status_code}")
+                    logger.error(f"❌ Response: {response.text}")
                     return []
                     
+        except httpx.ConnectError as e:
+            logger.error(f"❌ Network error (check internet): {e}")
+            logger.error(f"❌ Trying to connect to: {self.base_url}")
+            return []
+        except httpx.TimeoutException as e:
+            logger.error(f"❌ Timeout error (API slow): {e}")
+            return []
         except Exception as e:
             logger.error(f"❌ Failed to fetch messages: {e}", exc_info=True)
             return []
@@ -179,20 +203,25 @@ class WhatsAppPollingService:
         """
         Poll for new messages and process them.
         """
+        logger.info("🔄 Starting poll_messages...")
         try:
             # Get database session
             async for db in get_db_session():
+                logger.info("📡 DB session obtained, fetching messages...")
                 # Fetch messages
                 messages = await self.get_received_messages(limit=10)
-                
+                logger.info(f"📦 Got {len(messages)} messages to process")
+
                 # Process each message
                 for message_data in messages:
+                    logger.info(f"📨 Processing message: {message_data.get('id', 'unknown')}")
                     await self.process_message(message_data, db)
-                
+
                 # Close DB session
                 await db.close()
+                logger.info("✅ poll_messages completed")
                 break
-                
+
         except Exception as e:
             logger.error(f"❌ Polling error: {e}", exc_info=True)
     
@@ -201,15 +230,21 @@ class WhatsAppPollingService:
         Start polling loop.
         """
         logger.info("📱 Starting WhatsApp polling service...")
+        logger.info(f"⏰ Polling interval: {self.polling_interval} seconds")
         self._running = True
         
+        poll_count = 0
+
         while self._running:
+            poll_count += 1
+            logger.info(f"🔄 Polling iteration #{poll_count}")
             try:
                 await self.poll_messages()
             except Exception as e:
-                logger.error(f"❌ Polling loop error: {e}")
-            
+                logger.error(f"❌ Polling loop error: {e}", exc_info=True)
+
             # Wait for next poll
+            logger.info(f"⏳ Waiting {self.polling_interval} seconds for next poll...")
             await asyncio.sleep(self.polling_interval)
     
     def stop_polling(self) -> None:

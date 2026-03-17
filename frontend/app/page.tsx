@@ -194,6 +194,7 @@ export default function Home() {
 
   const [selectedChannel, setSelectedChannel] = useState<"web" | "email" | "whatsapp">("web");
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [showCopied, setShowCopied] = useState(false);
 
   const heroRef = useRef<HTMLDivElement>(null);
   const featuresRef = useRef<HTMLDivElement>(null);
@@ -1252,38 +1253,38 @@ export default function Home() {
       {/* Success Modal */}
       {showSuccessModal && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fade-in">
-          <Card className="max-w-lg w-full bg-white/95 backdrop-blur-xl border-2 border-[#74A8A4] shadow-2xl animate-scale-in">
-            <div className="p-6 text-center">
-              {/* Beautiful 3D Success Icon */}
-              <div className="relative w-20 h-20 mx-auto mb-4">
-                {/* Outer Glow Ring */}
-                <div className="absolute inset-0 rounded-full bg-gradient-to-br from-[#74A8A4] to-[#B6D9E0] opacity-30 blur-xl animate-pulse"></div>
+          <Card className="max-w-md w-full bg-white/95 backdrop-blur-xl border-2 border-[#74A8A4] shadow-2xl animate-scale-in">
+            <div className="p-5 text-center">
+              {/* Beautiful 3D Success Icon - Smaller */}
+              <div className="relative w-16 h-16 mx-auto mb-3">
+                {/* Outer Glow */}
+                <div className="absolute inset-0 rounded-full bg-gradient-to-br from-[#74A8A4] to-[#B6D9E0] opacity-30 blur-lg animate-pulse"></div>
                 {/* Main Circle */}
-                <div className="relative w-20 h-20 bg-gradient-to-br from-[#74A8A4] via-[#335765] to-[#B6D9E0] rounded-full flex items-center justify-center shadow-lg transform hover:scale-110 transition-transform duration-300">
-                  <CheckCircle2 className="w-10 h-10 text-white transform hover:scale-110 transition-transform duration-300" />
+                <div className="relative w-16 h-16 bg-gradient-to-br from-[#74A8A4] via-[#335765] to-[#B6D9E0] rounded-full flex items-center justify-center shadow-lg transform hover:scale-110 transition-transform duration-300">
+                  <CheckCircle2 className="w-8 h-8 text-white transform hover:scale-110 transition-transform duration-300" />
                 </div>
                 {/* Orbiting Dots */}
                 <div className="absolute inset-0 animate-spin" style={{ animationDuration: '3s' }}>
-                  <div className="absolute top-0 left-1/2 w-3 h-3 bg-[#74A8A4] rounded-full transform -translate-x-1/2 -translate-y-1 shadow-lg"></div>
+                  <div className="absolute top-0 left-1/2 w-2 h-2 bg-[#74A8A4] rounded-full transform -translate-x-1/2 -translate-y-1 shadow-lg"></div>
                 </div>
                 <div className="absolute inset-0 animate-spin" style={{ animationDuration: '3s', animationDirection: 'reverse' }}>
-                  <div className="absolute bottom-0 left-1/2 w-2.5 h-2.5 bg-[#B6D9E0] rounded-full transform -translate-x-1/2 translate-y-1 shadow-lg"></div>
+                  <div className="absolute bottom-0 left-1/2 w-1.5 h-1.5 bg-[#B6D9E0] rounded-full transform -translate-x-1/2 translate-y-1 shadow-lg"></div>
                 </div>
               </div>
-              <h3 className="text-2xl font-bold text-[#335765] mb-2">🎉 Submitted!</h3>
-              <p className="text-[#556b7a] text-sm mb-4">{status.message}</p>
+              <h3 className="text-xl font-bold text-[#335765] mb-2">🎉 Submitted!</h3>
+              <p className="text-[#556b7a] text-xs mb-3">{status.message}</p>
 
               {status.ticketId && (
-                <div className="bg-gradient-to-r from-[#74A8A4]/20 to-[#B6D9E0]/20 border-2 border-[#74A8A4] rounded-xl p-3 mb-4">
-                  <p className="text-xs text-[#556b7a] mb-1">Tracking ID</p>
-                  <p className="text-base font-bold text-[#335765] break-all">{status.ticketId}</p>
+                <div className="bg-gradient-to-r from-[#74A8A4]/20 to-[#B6D9E0]/20 border-2 border-[#74A8A4] rounded-lg p-2 mb-3">
+                  <p className="text-[10px] text-[#556b7a] mb-1">Tracking ID</p>
+                  <p className="text-sm font-bold text-[#335765] break-all">{status.ticketId}</p>
                 </div>
               )}
 
-              <div className="space-y-2 mb-4">
-                <p className="text-xs text-[#74A8A4]">✓ Response in 5 minutes</p>
-                <p className="text-xs text-[#74A8A4]">✓ Check your email</p>
-                <p className="text-xs text-[#74A8A4]">✓ Track status anytime</p>
+              <div className="flex gap-1 justify-center mb-3">
+                <p className="text-[10px] text-[#74A8A4]">✓ 5 min response</p>
+                <span className="text-[#DBE2DC]">•</span>
+                <p className="text-[10px] text-[#74A8A4]">✓ Track anytime</p>
               </div>
 
               <div className="space-y-2">
@@ -1293,9 +1294,9 @@ export default function Home() {
                       onClick={() => {
                         window.location.href = `/track/${status.ticketId}`;
                       }}
-                      className="w-full bg-gradient-to-r from-[#74A8A4] to-[#B6D9E0] hover:from-[#5d8f8b] hover:to-[#a3c4d4] text-white shadow-lg py-3 text-sm font-semibold cursor-pointer"
+                      className="w-full bg-gradient-to-r from-[#74A8A4] to-[#B6D9E0] hover:from-[#5d8f8b] hover:to-[#a3c4d4] text-white shadow-lg py-2.5 text-xs font-semibold cursor-pointer"
                     >
-                      <MessageSquare className="w-4 h-4 mr-2" />
+                      <MessageSquare className="w-3.5 h-3.5 mr-1.5" />
                       View Conversation
                     </Button>
                     <div className="grid grid-cols-2 gap-2">
@@ -1304,18 +1305,21 @@ export default function Home() {
                           window.location.href = `/check-status?ticket=${status.ticketId}`;
                         }}
                         variant="outline"
-                        className="w-full border-2 border-[#74A8A4] text-[#74A8A4] hover:bg-[#74A8A4]/10 py-3 text-sm font-semibold cursor-pointer"
+                        className="w-full border-2 border-[#74A8A4] text-[#74A8A4] hover:bg-[#74A8A4] hover:text-white py-2.5 text-xs font-semibold cursor-pointer transition-all duration-300"
                       >
                         <Ticket className="w-3 h-3 mr-1" />
-                        Check Status
+                        Status
                       </Button>
                       <Button
                         onClick={() => {
                           navigator.clipboard.writeText(status.ticketId!);
+                          setShowCopied(true);
+                          setTimeout(() => setShowCopied(false), 2000);
                         }}
                         variant="outline"
-                        className="w-full border-2 border-[#74A8A4] text-[#74A8A4] hover:bg-[#74A8A4]/10 py-3 text-sm font-semibold cursor-pointer"
+                        className="w-full border-2 border-[#74A8A4] text-[#74A8A4] hover:bg-[#74A8A4] hover:text-white py-2.5 text-xs font-semibold cursor-pointer transition-all duration-300"
                       >
+                        <Ticket className="w-3 h-3 mr-1" />
                         Copy ID
                       </Button>
                     </div>
@@ -1326,13 +1330,25 @@ export default function Home() {
                     setShowSuccessModal(false);
                     setStatus({ type: "idle", message: "" });
                   }}
-                  className="w-full bg-gradient-to-r from-[#335765] to-[#74A8A4] hover:from-[#2a4752] hover:to-[#5d8f8b] text-white shadow-lg py-3 text-sm cursor-pointer"
+                  className="w-full bg-gradient-to-r from-[#335765] to-[#74A8A4] hover:from-[#2a4752] hover:to-[#5d8f8b] text-white shadow-lg py-2.5 text-xs cursor-pointer"
                 >
                   Submit Another
                 </Button>
               </div>
             </div>
           </Card>
+          
+          {/* Copied to Clipboard Toast */}
+          {showCopied && (
+            <div className="fixed top-4 right-4 z-50 animate-scale-in">
+              <div className="bg-gradient-to-r from-[#74A8A4] to-[#335765] text-white px-6 py-3 rounded-xl shadow-2xl flex items-center gap-3">
+                <div className="w-6 h-6 bg-white/20 rounded-full flex items-center justify-center">
+                  <CheckCircle2 className="w-4 h-4" />
+                </div>
+                <span className="font-semibold text-sm">Copied to clipboard!</span>
+              </div>
+            </div>
+          )}
         </div>
       )}
 
