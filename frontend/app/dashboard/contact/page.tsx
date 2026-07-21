@@ -20,6 +20,8 @@ interface FormStatus {
   message: string;
 }
 
+import { API_BASE } from "@/lib/api-client";
+
 export default function ContactPage() {
   const [formData, setFormData] = useState<FormData>({
     name: "",
@@ -39,7 +41,7 @@ export default function ContactPage() {
 
     try {
       // Create a ticket from the web form submission
-      const response = await fetch("http://localhost:8000/api/v1/tickets", {
+      const response = await fetch(`${API_BASE}/tickets`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

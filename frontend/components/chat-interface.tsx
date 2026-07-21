@@ -8,6 +8,7 @@ import { Avatar } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { ticketsApi, Ticket } from "@/lib/api";
 import { Sparkles, Send } from "lucide-react";
+import { API_BASE } from "@/lib/api-client";
 
 interface Message {
   id: string;
@@ -78,7 +79,7 @@ export default function ChatInterface() {
     if (!conversationId) return;
 
     try {
-      const response = await fetch(`http://localhost:8000/api/v1/conversations/${conversationId}/messages`);
+      const response = await fetch(`${API_BASE}/conversations/${conversationId}/messages`);
       if (response.ok) {
         const data: ApiMessage[] = await response.json();
         const messages: Message[] = data.map(msg => ({
@@ -233,7 +234,7 @@ export default function ChatInterface() {
     setIsLoading(true);
 
     try {
-      const response = await fetch("http://localhost:8000/api/v1/agent/respond", {
+      const response = await fetch(`${API_BASE}/agent/respond`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

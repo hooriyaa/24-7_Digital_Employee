@@ -21,6 +21,7 @@ import {
 } from "lucide-react";
 import { gsap } from "gsap";
 import { useGSAP } from "@gsap/react";
+import { API_BASE } from "@/lib/api-client";
 
 gsap.registerPlugin(useGSAP);
 
@@ -77,7 +78,7 @@ export default function TrackPage() {
     setError("");
     
     try {
-      const response = await fetch(`http://localhost:8000/api/v1/tickets/status?ticket_id=${ticketId}`);
+      const response = await fetch(`${API_BASE}/tickets/status?ticket_id=${ticketId}`);
       
       if (!response.ok) {
         const errorData = await response.json();
@@ -159,7 +160,7 @@ export default function TrackPage() {
     setNewMessage("");
     
     try {
-      const response = await fetch(`http://localhost:8000/api/v1/tickets/${ticketData.ticket_id}/messages`, {
+      const response = await fetch(`${API_BASE}/tickets/${ticketData.ticket_id}/messages`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

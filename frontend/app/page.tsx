@@ -36,6 +36,7 @@ import {
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
+import { API_BASE } from "@/lib/api-client";
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
@@ -346,7 +347,7 @@ export default function Home() {
         }
       }
 
-      const response = await fetch("http://localhost:8000/api/v1/tickets", {
+      const response = await fetch(`${API_BASE}/tickets`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

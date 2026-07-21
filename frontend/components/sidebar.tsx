@@ -13,6 +13,7 @@ import {
   ArrowLeft,
   X
 } from "lucide-react";
+import { API_BASE } from "@/lib/api-client";
 
 interface NavItem {
   title: string;
@@ -123,7 +124,7 @@ export function Sidebar({ className, onClose }: SidebarProps) {
       {/* Footer */}
       <div className="border-t border-[#74A8A4]/30 p-4">
         <Button variant="ghost" className="w-full justify-start text-xs text-[#B6D9E0]/80 hover:text-white hover:bg-[#74A8A4]/20 transition-all" asChild>
-          <a href="http://localhost:8000/docs" target="_blank" rel="noopener noreferrer">
+          <a href={`${API_BASE.replace('/api/v1', '')}/docs`} target="_blank" rel="noopener noreferrer">
             <BookOpen className="w-4 h-4 mr-2" />
             API Documentation
           </a>
