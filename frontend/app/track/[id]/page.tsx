@@ -98,7 +98,7 @@ export default function TrackPage() {
         const confirmedOptimisticContents = new Set(
           optimisticMessages
             .filter(optMsg => 
-              data.messages.some(dataMsg => dataMsg.content === optMsg.content)
+              data.messages.some((dataMsg: Message) => dataMsg.content === optMsg.content)
             )
             .map(optMsg => optMsg.content)
         );
