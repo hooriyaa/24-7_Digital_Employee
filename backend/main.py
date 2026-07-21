@@ -52,11 +52,11 @@ async def lifespan(app: FastAPI):
             print("✅ Gmail polling started (checking every 30 seconds)")
 
         # Start WhatsApp polling in background
-        # Disabled - using webhook instead (faster & no ngrok needed for polling!)
-        # if settings.debug:  # Only in development
-        #     print("📱 Starting WhatsApp polling service...")
-        #     asyncio.create_task(whatsapp_polling_service.start_polling())
-        #     print("✅ WhatsApp polling started (checking every 30 seconds)")
+        # Polling doesn't need ngrok — works on localhost
+        if settings.debug:  # Only in development
+            print("📱 Starting WhatsApp polling service...")
+            asyncio.create_task(whatsapp_polling_service.start_polling())
+            print("✅ WhatsApp polling started (checking every 30 seconds)")
 
     except Exception as e:
         print(f"❌ Startup error: {e}")

@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter, Poppins } from "next/font/google";
 import "./globals.css";
 
@@ -18,7 +18,13 @@ const poppins = Poppins({
 export const metadata: Metadata = {
   title: "Customer Success FTE - 24/7 AI-Powered Support",
   description: "An autonomous AI agent that handles customer inquiries across Email, WhatsApp, and Web",
-  viewport: "width=device-width, initial-scale=1, maximum-scale=5, minimum-scale=1",
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  minimumScale: 1,
 };
 
 export default function RootLayout({
