@@ -28,7 +28,7 @@ import {
 } from "lucide-react";
 import { gsap } from "gsap";
 import { useGSAP } from "@gsap/react";
-import { API_BASE } from "@/lib/api-client";
+import { apiUrl } from "@/lib/api-client";
 
 gsap.registerPlugin(useGSAP);
 
@@ -133,7 +133,7 @@ function CheckStatusContent() {
         return;
       }
 
-      const response = await fetch(`${API_BASE}/tickets/status?${params.toString()}`);
+      const response = await fetch(apiUrl(`/tickets/status?${params.toString()}`));
       
       if (!response.ok) {
         const errorData = await response.json();

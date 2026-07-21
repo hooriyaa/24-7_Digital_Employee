@@ -13,7 +13,7 @@ import {
   ArrowLeft,
   X
 } from "lucide-react";
-import { API_BASE } from "@/lib/api-client";
+import { apiUrl, API_BASE } from "@/lib/api-client";
 
 interface NavItem {
   title: string;
