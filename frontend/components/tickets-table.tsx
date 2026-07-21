@@ -8,7 +8,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
 import { ticketsApi } from "@/lib/api";
 import type { Ticket } from "@/lib/api";
-import { Trash2, Ticket as TicketIcon, Search } from "lucide-react";
+import { Trash2, Ticket as TicketIcon, Search, RefreshCw } from "lucide-react";
 
 const statusColors: Record<string, string> = {
   open: "bg-blue-50 text-blue-700 border-blue-200",
