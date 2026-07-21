@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -54,7 +54,7 @@ interface TicketStatus {
   message_count: number;
 }
 
-export default function CheckStatusPage() {
+function CheckStatusContent() {
   const searchParams = useSearchParams();
   const [searchType, setSearchType] = useState<"ticket" | "email">("ticket");
   const [ticketId, setTicketId] = useState("");
@@ -507,5 +507,20 @@ export default function CheckStatusPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function CheckStatusPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gradient-to-b from-[#F8F9F8] via-[#DBE2DC] to-[#F8F9F8] flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-12 h-12 bg-gradient-to-br from-[#335765] to-[#74A8A4] rounded-xl animate-pulse mx-auto mb-4" />
+          <p className="text-[#556b7a]">Loading...</p>
+        </div>
+      </div>
+    }>
+      <CheckStatusContent />
+    </Suspense>
   );
 }
