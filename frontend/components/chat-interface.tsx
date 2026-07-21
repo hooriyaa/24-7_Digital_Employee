@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { ticketsApi, Ticket } from "@/lib/api";
-import { Sparkles } from "lucide-react";
+import { Sparkles, Send } from "lucide-react";
 
 interface Message {
   id: string;
